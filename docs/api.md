@@ -11,26 +11,17 @@
 
 ---
 
-## 2. Customer
+## 2. Wallet (Pocket)
 
-| Method | Endpoint             | Mục đích                     |
-| ------ | -------------------- | ---------------------------- |
-| GET    | `/customers/profile` | Lấy thông tin khách hàng     |
-| GET    | `/customers/balance` | Xem số dư ví                 |
-| GET    | `/customers/history` | Lịch sử giao dịch thành công |
-
----
-
-## 3. Wallet (Pocket)
-
-| Method | Endpoint               | Mục đích                     |
-| ------ | ---------------------- | ---------------------------- |
-| GET    | `/wallets/:id`         | Thông tin Pocket             |
-| GET    | `/wallets/:id/entries` | Danh sách PocketEntry của ví |
+| Method | Endpoint               | Mục đích                      |
+| ------ | ---------------------- | ----------------------------- |
+| POST   | `/wallets/:id`         | Thông tin Pocket              |
+<!-- | POST   | `/wallets/:id/entries` | Danh sách PocketEntry của ví  | -->
+| POST   | `/wallets/:id/transaction` | Danh sách Transaction |
 
 ---
 
-## 4. Transaction Engine
+## 3. Transaction Engine
 
 ### Request
 
@@ -53,14 +44,6 @@
 | Method | Endpoint              | Mục đích                                                                      |
 | ------ | --------------------- | ----------------------------------------------------------------------------- |
 | POST   | `/transaction/verify` | Kiểm PIN, thực hiện giao dịch, cập nhật số dư, tạo Transaction và PocketEntry |
-
----
-
-## 5. Cash-in
-
-| Method | Endpoint         | Mục đích                                             |
-| ------ | ---------------- | ---------------------------------------------------- |
-| POST   | `/admin/cash-in` | Officer nạp tiền từ Bank Pocket sang Customer Pocket |
 
 ---
 
@@ -143,7 +126,6 @@
 | ------ | ----------------------------- | --------------------- |
 | GET    | `/admin/customers`            | Danh sách Customer    |
 | GET    | `/admin/customers/:id`        | Chi tiết Customer     |
-| PUT    | `/admin/customers/:id/status` | Khóa/Mở khóa Customer |
 
 ---
 
