@@ -1,0 +1,5 @@
+module.exports.i18n = {
+  locales: ['en', 'vi'],
+  defaultLocale: 'vi',
+  localesDirectory: 'config/locales',
+};
