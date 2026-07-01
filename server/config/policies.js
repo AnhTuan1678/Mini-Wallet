@@ -1,9 +1,16 @@
 module.exports.policies = {
-  /***************************************************************************
-   *                                                                          *
-   * Default policy for all controllers and actions, unless overridden.       *
-   * (`true` allows public access)                                            *
-   *                                                                          *
-   ***************************************************************************/
-  // '*': true,
+  '*': false,
+  'GET /': true,
+
+  CustomerController: {
+    register: true,
+    login: true,
+    me: 'isLoggedIn',
+    // update: 'isLoggedIn',
+    // changePassword: 'isLoggedIn',
+    // changePin: 'isLoggedIn',
+    // getAll: 'isLoggedIn',
+    // get: 'isLoggedIn',
+    // delete: 'isLoggedIn',
+  },
 };
