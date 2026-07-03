@@ -24,11 +24,9 @@ module.exports = async (transInput) => {
     authMethod: service.authMethod,
   }).fetch();
 
-  // TODO: Xác thực logic
   try {
     await validateFields({ service, transBody });
 
-    // TODO: Tính phí
     const feeSnapshot = calculateFee(
       {
         type: service.feeType,
@@ -39,12 +37,9 @@ module.exports = async (transInput) => {
       transBody.amount
     );
     const totalAmount = transBody.amount + feeSnapshot;
+    trail.feeSnapshot = feeSnapshot; // Lưu lại phí tạm thời vào trail
 
-    await validateTransaction({
-      transBody,
-      feeSnapshot,
-      service,
-    });
+    await validateTransaction({ trail });
     const outputMessage = {
       ...trail.outputMessage,
       transBody: {
@@ -76,7 +71,6 @@ module.exports = async (transInput) => {
       status: 'pending',
     });
 
-    // TODO: Trả về preview
     return {
       amount: transBody.amount,
       fee: feeSnapshot,

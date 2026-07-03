@@ -26,7 +26,7 @@ module.exports = async (trail) => {
   const session = client.startSession();
 
   try {
-    await session.withTransaction(async () => {
+    const transaction = await session.withTransaction(async () => {
       for (const step of glSteps) {
         const amount = variables[step.amount];
 
@@ -37,11 +37,15 @@ module.exports = async (trail) => {
         const debitPocketId = await resolvePocket(step.debit, variables);
         const creditPocketId = await resolvePocket(step.credit, variables);
 
-        await collection.updateOne(
+        const debitResult = await collection.updateOne(
           { _id: new ObjectId(debitPocketId), balance: { $gte: amount } },
           { $inc: { balance: -amount } },
           { session }
         );
+
+        if (debitResult.modifiedCount !== 1) {
+          throw new Error('Số dư không đủ.');
+        }
 
         await collection.updateOne(
           { _id: new ObjectId(creditPocketId) },
@@ -49,17 +53,20 @@ module.exports = async (trail) => {
           { session }
         );
 
-        await PocketEntry.create({
-          transRefId: trail.id,
-          stepOrder: step.order,
-          debit: debitPocketId,
-          credit: creditPocketId,
-          amount,
-          status: 'settled',
-        });
+        await client.db().collection(PocketEntry.tableName).insertOne(
+          {
+            transRefId: trail.id,
+            stepOrder: step.order,
+            debit: debitPocketId,
+            credit: creditPocketId,
+            amount,
+            status: 'settled',
+          },
+          { session }
+        );
       }
 
-      const transaction = await Transaction.create({
+      const transaction = {
         transRefId: trail.id,
         service: trail.service,
         senderPocket: transBody.senderPocketId,
@@ -68,12 +75,19 @@ module.exports = async (trail) => {
         fee: trail.feeSnapshot,
         totalAmount: transBody.amount + trail.feeSnapshot,
         status: 'done',
-      }).fetch();
+      };
+
+      await client
+        .db()
+        .collection(Transaction.tableName)
+        .insertOne(transaction, { session });
 
       return transaction;
     });
+
+    return transaction;
   } catch (err) {
-    console.log(err);
+    throw new Error(`Giao dịch thất bại: ${err.message}`);
   } finally {
     await session.endSession();
   }

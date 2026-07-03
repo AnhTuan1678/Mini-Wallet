@@ -31,7 +31,7 @@ module.exports = async (transInput) => {
 
     // const feeSnapshot = await calculateFee(trail.inputMessage.transBody);
 
-    await validateTransaction(trail);
+    await validateTransaction({ trail });
 
     const transaction = await executeTransaction(trail);
 
