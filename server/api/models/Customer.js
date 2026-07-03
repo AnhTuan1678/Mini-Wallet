@@ -29,8 +29,8 @@ module.exports = {
 
     role: {
       type: 'string',
-      isIn: ['CUSTOMER', 'ADMIN', 'BILLER', 'SYSTEM', 'BANK'],
-      defaultsTo: 'CUSTOMER',
+      isIn: ['customer', 'admin', 'biller', 'system', 'bank'],
+      defaultsTo: 'customer',
     },
 
     status: {

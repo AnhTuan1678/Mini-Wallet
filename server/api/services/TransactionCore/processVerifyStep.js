@@ -20,7 +20,7 @@ module.exports = async (transInput) => {
     throw new Error('Trạng thái giao dịch không hợp lệ.');
   }
 
-  // await validateStateAndLock(senderId);
+  await validateStateAndLock(senderId);
 
   try {
     const authMethod = trail.authMethod;
@@ -29,34 +29,29 @@ module.exports = async (transInput) => {
       await verifyPINAsync(transInput.user.id, transInput.body.pin);
     }
 
-    // calculateFee({});
+    // const feeSnapshot = await calculateFee(trail.inputMessage.transBody);
 
-    // await validateTransaction({
-    //   transBody,
-    //   feeSnapshot,
-    //   service,
-    // });
+    await validateTransaction(trail);
 
-    await executeTransaction(trail);
+    const transaction = await executeTransaction(trail);
 
-    // await releaseSenderPocket(senderId);
+    await releaseSenderPocket(senderId);
 
     // Cập nhật lại trạng thái giao dịch
-    // await TransactionTrail.updateOne({ id: trail.id }).set({
-    //   status: 'done',
-    //   expiredAt: Date.now() + 1000 * 60 * 2,
-    //   transStepLog: [
-    //     ...trail.transStepLog,
-    //     {
-    //       step: 3,
-    //       status: 'done',
-    //       message: 'Giao dịch hoàn tất',
-    //       createdAt: new Date(),
-    //     },
-    //   ],
-    // });
+    await TransactionTrail.updateOne({ id: trail.id }).set({
+      status: 'done',
+      transStepLog: [
+        ...trail.transStepLog,
+        {
+          step: 3,
+          status: 'done',
+          message: 'Giao dịch hoàn tất',
+          createdAt: new Date(),
+        },
+      ],
+    });
 
-    return { authMethod, transRefId };
+    return { authMethod, transRefId, transaction };
   } catch (error) {
     await TransactionTrail.updateOne({ id: trail.id }).set({
       status: 'failed',

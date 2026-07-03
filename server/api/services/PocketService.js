@@ -5,6 +5,8 @@ function generateChecksum(data) {
 }
 
 module.exports = {
+  generateChecksum,
+
   create: async (ownerId, currency = 'VND') => {
     const customer = await Customer.findOne({ id: ownerId });
 
@@ -18,8 +20,13 @@ module.exports = {
       owner: ownerId,
       type,
       currency,
-      balance: 0,
-      checksum: generateChecksum({ ownerId, type, currency, balance: 0 }),
+      balance: 1000000,
+      checksum: generateChecksum({
+        owner: ownerId,
+        type,
+        currency,
+        balance: 1000000,
+      }),
     }).fetch();
 
     return pocket;

@@ -3,7 +3,6 @@ module.exports = {
     transRefId: {
       type: 'string',
       required: true,
-      unique: true,
     },
 
     stepOrder: {

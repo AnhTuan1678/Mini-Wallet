@@ -1,6 +1,8 @@
 // module.exports.bootstrap = async function () {
 //   global.HttpResponses = require('../api/constants/HttpResponses');
 
+const { generateChecksum } = require('../api/services/PocketService');
+
 // };
 module.exports.bootstrap = async function (done) {
   global.HttpResponses = require('../api/constants/HttpResponses');
@@ -18,6 +20,8 @@ module.exports.bootstrap = async function (done) {
     TransValidation.destroy({}),
     TransDefinition.destroy({}),
     TransactionTrail.destroy({}),
+    PocketEntry.destroy({}),
+    Transaction.destroy({}),
     Service.destroy({}),
   ]);
 
@@ -234,11 +238,29 @@ module.exports.bootstrap = async function (done) {
         },
         credit: {
           level: 'wallet',
-          target: 'SYSTEM',
+          target: 'system',
         },
       },
     ],
   });
+
+  // create system pocket nếu chưa có
+  const systemPocket = await Pocket.findOne({
+    type: 'system',
+  });
+
+  if (!systemPocket) {
+    await Pocket.create({
+      type: 'system',
+      balance: 1000000,
+      checksum: generateChecksum({
+        owner: null,
+        type: 'system',
+        currency: 'VND',
+        balance: 1000000,
+      }),
+    });
+  }
 
   done();
 };

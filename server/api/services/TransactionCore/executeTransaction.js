@@ -1,4 +1,4 @@
-const ObjectId = require('mongodb').ObjectId;
+const { ObjectId } = require('mongodb');
 
 module.exports = async (trail) => {
   const transDefinition = await TransDefinition.findOne({
@@ -21,7 +21,7 @@ module.exports = async (trail) => {
   );
 
   const client = Pocket.getDatastore().manager.client;
-  const collection = Pocket.getDatastore().manager.collection(Pocket.tableName);
+  const collection = client.db().collection(Pocket.tableName);
 
   const session = client.startSession();
 
@@ -37,39 +37,16 @@ module.exports = async (trail) => {
         const debitPocketId = await resolvePocket(step.debit, variables);
         const creditPocketId = await resolvePocket(step.credit, variables);
 
-        const debitResult = await collection.findOneAndUpdate(
-          {
-            _id: new ObjectId(debitPocketId),
-            balance: { $gte: amount },
-          },
-          {
-            $inc: {
-              balance: -amount,
-            },
-          },
-          {
-            session,
-            returnDocument: 'after',
-          }
+        await collection.updateOne(
+          { _id: new ObjectId(debitPocketId), balance: { $gte: amount } },
+          { $inc: { balance: -amount } },
+          { session }
         );
 
-        if (!debitResult) {
-          throw new Error('Số dư không đủ.');
-        }
-
-        await collection.findOneAndUpdate(
-          {
-            _id: new ObjectId(creditPocketId),
-          },
-          {
-            $inc: {
-              balance: amount,
-            },
-          },
-          {
-            session,
-            returnDocument: 'after',
-          }
+        await collection.updateOne(
+          { _id: new ObjectId(creditPocketId) },
+          { $inc: { balance: amount } },
+          { session }
         );
 
         await PocketEntry.create({
@@ -79,26 +56,24 @@ module.exports = async (trail) => {
           credit: creditPocketId,
           amount,
           status: 'settled',
-        }).usingConnection(session);
+        });
       }
 
       const transaction = await Transaction.create({
         transRefId: trail.id,
         service: trail.service,
-        // sender: transBody.senderId,
-        // receiver: transBody.receiverId,
-        senderPocket: transBody.senderPocket,
-        receiverPocket: transBody.receiverPocket,
+        senderPocket: transBody.senderPocketId,
+        receiverPocket: transBody.receiverPocketId,
         amount: transBody.amount,
         fee: trail.feeSnapshot,
         totalAmount: transBody.amount + trail.feeSnapshot,
         status: 'done',
-      })
-        .usingConnection(session)
-        .fetch();
+      }).fetch();
 
       return transaction;
     });
+  } catch (err) {
+    console.log(err);
   } finally {
     await session.endSession();
   }
@@ -111,7 +86,7 @@ async function resolvePocket(config, variables) {
 
     case 'wallet': {
       const pocket = await Pocket.findOne({
-        code: config.target,
+        type: config.target,
       });
 
       if (!pocket) {

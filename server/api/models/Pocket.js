@@ -1,8 +1,11 @@
 module.exports = {
   attributes: {
+    code: {
+      type: 'string',
+    },
+
     owner: {
       model: 'customer',
-      required: true,
     },
 
     balance: {
@@ -13,8 +16,8 @@ module.exports = {
 
     type: {
       type: 'string',
-      required: true,
-      isIn: ['CUSTOMER', 'BANK', 'BILLER', 'AGENT'],
+      isIn: ['customer', 'bank', 'biller', 'system'],
+      defaultsTo: 'customer',
     },
 
     status: {
