@@ -1,7 +1,7 @@
 const jwt = require('jsonwebtoken');
 
 module.exports = async function (req, res, next) {
-  const JWT_SECRET = process.env.JWT_SECRET;
+  // const JWT_SECRET = process.env.JWT_SECRET;
   const authHeader = req.headers['authorization'] || '';
   const token = authHeader.split(' ')[1];
 
@@ -10,8 +10,7 @@ module.exports = async function (req, res, next) {
   }
 
   try {
-    const decoded = jwt.verify(token, JWT_SECRET);
-    console.log('🚀 ~ isLoggedIn.js:14 ~ decoded:', decoded);
+    const decoded = jwt.verify(token, sails.config.custom.jwtSecret);
     req.user = decoded;
 
     return next();

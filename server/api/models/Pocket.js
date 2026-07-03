@@ -19,8 +19,14 @@ module.exports = {
 
     status: {
       type: 'string',
-      required: true,
-      isIn: ['ACTIVE', 'LOCKED'],
+      isIn: ['active', 'inactive'],
+      defaultsTo: 'active',
+    },
+
+    state: {
+      type: 'string',
+      defaultsTo: 'available',
+      isIn: ['available', 'inProgress'],
     },
 
     currency: {

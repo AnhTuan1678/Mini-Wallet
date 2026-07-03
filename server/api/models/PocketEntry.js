@@ -6,6 +6,11 @@ module.exports = {
       unique: true,
     },
 
+    stepOrder: {
+      type: 'number',
+      required: true,
+    },
+
     credit: {
       model: 'pocket',
       required: true,
@@ -19,6 +24,12 @@ module.exports = {
     amount: {
       type: 'number',
       required: true,
+    },
+
+    status: {
+      type: 'string',
+      isIn: ['settled', 'failed'],
+      defaultsTo: 'settled',
     },
   },
 };

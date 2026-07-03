@@ -10,32 +10,14 @@ module.exports = {
       required: true,
     },
 
-    fieldName: {
+    validateFunc: {
       type: 'string',
       required: true,
     },
 
-    dataType: {
+    validateFields: {
       type: 'string',
-      isIn: ['string', 'number', 'boolean', 'date'],
       required: true,
-    },
-
-    isRequired: {
-      type: 'boolean',
-      defaultsTo: true,
-    },
-
-    minLength: {
-      type: 'number',
-    },
-
-    maxLength: {
-      type: 'number',
-    },
-
-    regex: {
-      type: 'string',
     },
 
     errorCode: {

@@ -19,7 +19,6 @@ module.exports = {
       type,
       currency,
       balance: 0,
-      status: 'ACTIVE',
       checksum: generateChecksum({ ownerId, type, currency, balance: 0 }),
     }).fetch();
 

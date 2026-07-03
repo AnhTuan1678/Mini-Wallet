@@ -49,8 +49,8 @@ module.exports = {
       role: customer.role,
     };
 
-    const token = jwt.sign(payload, process.env.JWT_SECRET, {
-      expiresIn: '1h',
+    const token = jwt.sign(payload, sails.config.custom.jwtSecret, {
+      expiresIn: sails.config.custom.jwtExpiresIn,
     });
 
     return { customer: payload, token };

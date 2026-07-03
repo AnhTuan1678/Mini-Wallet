@@ -5,35 +5,49 @@ module.exports = {
       required: true,
     },
 
-    transaction: {
-      model: 'transaction',
-      required: true,
-    },
-
     status: {
       type: 'string',
-      isIn: ['INIT', 'PENDING', 'SUCCESS', 'FAILED', 'CANCELLED'],
-      defaultsTo: 'INIT',
-      // required: true,
+      isIn: [
+        'init',
+        'pending',
+        'confirmed',
+        'done',
+        'failed',
+        'cancelled',
+        'expired',
+      ],
+      defaultsTo: 'init',
     },
 
     inputMessage: {
       type: 'json',
-      defaultsTo: {},
+      defaultsTo: { transBody: {}, header: {} },
     },
 
     outputMessage: {
       type: 'json',
-      defaultsTo: {},
+      defaultsTo: { transBody: {}, header: {} },
     },
 
-    // transStepLog: {
-    //   model: 'transStepLog',
-    // },
+    feeSnapshot: {
+      type: 'number',
+      defaultsTo: 0,
+    },
+
+    authMethod: {
+      type: 'string',
+      isIn: ['otp', 'pin', 'none'],
+      defaultsTo: 'pin',
+    },
+
+    transStepLog: {
+      type: 'json',
+      columnType: 'array',
+      defaultsTo: [],
+    },
 
     expiredAt: {
-      type: 'ref',
-      columnType: 'datetime',
+      type: 'number',
     },
   },
 };

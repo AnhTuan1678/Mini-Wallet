@@ -1,5 +1,10 @@
 module.exports = {
   attributes: {
+    code: {
+      type: 'number',
+      unique: true,
+    },
+
     transRefId: {
       type: 'string',
       required: true,
@@ -43,7 +48,6 @@ module.exports = {
 
     message: {
       type: 'string',
-      required: true,
     },
   },
 };

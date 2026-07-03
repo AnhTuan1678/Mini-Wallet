@@ -13,4 +13,10 @@ module.exports.policies = {
     // get: 'isLoggedIn',
     // delete: 'isLoggedIn',
   },
+
+  TransactionController: {
+    request: 'isLoggedIn',
+    confirm: 'isLoggedIn',
+    verify: 'isLoggedIn',
+  },
 };

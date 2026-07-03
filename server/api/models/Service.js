@@ -11,25 +11,55 @@ module.exports = {
       required: true,
     },
 
-    type: {
-      type: 'string',
-      required: true,
-    },
-
     authMethod: {
       type: 'string',
-      required: true,
+      isIn: ['pin', 'none', 'otp'],
+      defaultsTo: 'pin',
     },
 
-    fee: {
-      type: 'json',
-      defaultsTo: {
-        type: 'flat', // [PERCENT, FLAT, NONE]
-        value: 0,
-        currency: 'VND',
-        max: 0,
-        min: 0,
-      },
+    feeType: {
+      type: 'string',
+      isIn: ['fixed', 'percent'],
+      defaultsTo: 'fixed',
+    },
+
+    feeValue: {
+      type: 'number',
+      defaultsTo: 0,
+    },
+
+    feeMax: {
+      type: 'number',
+      defaultsTo: Number.MAX_SAFE_INTEGER,
+    },
+
+    feeMin: {
+      type: 'number',
+      defaultsTo: 0,
+    },
+
+    status: {
+      type: 'boolean',
+      defaultsTo: true,
+    },
+
+    fieldBuilders: {
+      collection: 'fieldBuilder',
+      via: 'service',
+    },
+
+    transFields: {
+      collection: 'transField',
+      via: 'service',
+    },
+
+    validations: {
+      collection: 'transValidation',
+      via: 'service',
+    },
+
+    definition: {
+      model: 'transDefinition',
     },
   },
 };
