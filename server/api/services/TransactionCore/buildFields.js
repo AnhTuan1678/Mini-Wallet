@@ -23,31 +23,44 @@ const query = {
 };
 
 async function buildField(field, flatInput) {
-  switch (field.rule) {
-    case 'fixed':
-      return field.value;
+  try {
+    switch (field.rule) {
+      case 'fixed':
+        return field.value;
 
-    case 'mapping':
-      return flatInput[field.sourceField];
+      case 'mapping':
+        return flatInput[field.sourceField];
 
-    case 'query':
-      const args = field.queryFields.map((element) => flatInput[element]);
+      case 'query': {
+        const args = field.queryFields.map((element) => flatInput[element]);
 
-      const result = await query[field.query](...args);
+        const result = await query[field.query](...args);
 
-      if (!field.columns || field.columns.length === 0) {
-        return result;
+        if (!field.columns || field.columns.length === 0) {
+          return result;
+        }
+
+        const output = {};
+
+        for (const column of field.columns) {
+          output[column] = result[column];
+        }
+
+        return output;
       }
 
-      const output = {};
+      default:
+        throw new Error(`Rule "${field.rule}" không hợp lệ`);
+    }
+  } catch (error) {
+    sails.log.error(
+      `Lỗi khi build field "${field.code || field.name}":`,
+      error
+    );
 
-      for (const column of field.columns) {
-        output[column] = result[column];
-      }
-
-      return output;
-    default:
-      throw new Error(`Rule "${field.rule}" không hợp lệ`);
+    throw new Error(
+      `Không thể build field "${field.code || field.name}": ${error.message}`
+    );
   }
 }
 
@@ -79,9 +92,9 @@ module.exports = async function ({ service, transInput }) {
     const value = await buildField(field, flatInput);
 
     if (value && typeof value === 'object' && !Array.isArray(value)) {
-      Object.assign(result, prefixKeys(value, field.name));
+      Object.assign(result, prefixKeys(value, field.code));
     } else {
-      result[field.name] = value;
+      result[field.code] = value;
     }
   }
 

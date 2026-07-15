@@ -20,12 +20,12 @@ module.exports = {
       owner: ownerId,
       type,
       currency,
-      balance: 1000000,
+      balance: 0,
       checksum: generateChecksum({
         owner: ownerId,
         type,
         currency,
-        balance: 1000000,
+        balance: 0,
       }),
     }).fetch();
 
@@ -34,6 +34,16 @@ module.exports = {
 
   find: async (id) => {
     const pocket = await Pocket.findOne({ id });
+
+    if (!pocket) {
+      throw new Error('Không tìm thấy ví');
+    }
+
+    return pocket;
+  },
+
+  findByOwner: async (ownerId) => {
+    const pocket = await Pocket.findOne({ owner: ownerId });
 
     if (!pocket) {
       throw new Error('Không tìm thấy ví');
@@ -59,6 +69,6 @@ module.exports = {
       throw new Error('Không tìm thấy ví');
     }
 
-    return pocket;
+    return pocket.balance;
   },
 };

@@ -73,13 +73,6 @@ const validateFuncs = {
   },
 };
 
-// validateBalance
-// validateReceiverIsNotSender
-// validatePocketChecksum
-// validateTransactionLimit
-// validatePIN
-// validateExpiryTime
-
 module.exports = async function ({ trail }) {
   const validationRules = await TransValidation.find({
     service: trail.service,

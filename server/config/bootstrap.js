@@ -46,91 +46,108 @@ module.exports.bootstrap = async function (done) {
     {
       service: service.id,
       order: 1,
-      name: 'userId',
+      code: 'userId',
+      name: 'Id người gửi',
       rule: 'mapping',
       sourceField: 'senderId',
       dataType: 'string',
-      required: true,
+      isRequired: false,
     },
 
     {
       service: service.id,
       order: 2,
-      name: 'receiverPhone',
+      code: 'receiverPhone',
+      name: 'Số điện thoại người nhận',
       rule: 'mapping',
       sourceField: 'receiverPhone',
       dataType: 'string',
+      isRequired: true,
     },
 
     {
       service: service.id,
       order: 3,
-      name: 'amount',
+      code: 'amount',
+      name: 'Số tiền',
       rule: 'mapping',
       sourceField: 'amount',
       dataType: 'number',
+      isRequired: true,
     },
 
     {
       service: service.id,
       order: 4,
-      name: 'debitFee',
+      code: 'debitFee',
+      name: 'Phí gạch nợ',
       rule: 'fixed',
       value: 100,
       dataType: 'number',
+      isRequired: false,
     },
 
     {
       service: service.id,
       order: 5,
-      name: 'currency',
+      code: 'currency',
+      name: 'Đơn vị tiền tệ',
       rule: 'fixed',
       value: 'MMK',
       dataType: 'string',
+      isRequired: false,
     },
 
     {
       service: service.id,
       order: 6,
-      name: 'sender',
+      code: 'sender',
+      name: 'Người gửi',
       rule: 'query',
       query: 'queryUserById',
       queryFields: ['senderId'],
       columns: ['id', 'name', 'phone', 'role'],
       dataType: 'string',
+      isRequired: false,
     },
 
     {
       service: service.id,
       order: 7,
-      name: 'receiver',
+      code: 'receiver',
+      name: 'Người nhận',
       rule: 'query',
       query: 'queryUserByPhone',
       queryFields: ['receiverPhone'],
       columns: ['id', 'name', 'phone', 'role'],
       dataType: 'string',
+      isRequired: false,
     },
 
     {
       service: service.id,
       order: 8,
-      name: 'senderPocket',
+      code: 'senderPocket',
+      name: 'Ví của người gửi',
       rule: 'query',
       query: 'queryPocketByUserId',
       queryFields: ['senderId'],
       columns: ['id', 'balance'],
       dataType: 'string',
+      isRequired: false,
     },
 
     {
       service: service.id,
       order: 9,
-      name: 'receiverPocket',
+      code: 'receiverPocket',
+      name: 'Ví của người nhận',
       rule: 'query',
       query: 'queryPocketByPhone',
       queryFields: ['receiverPhone'],
       columns: ['id', 'balance'],
       dataType: 'string',
+      isRequired: false,
     },
   ]);
 
@@ -146,6 +163,7 @@ module.exports.bootstrap = async function (done) {
       order: 1,
       fieldName: 'userId',
       dataType: 'string',
+      isRequired: true,
     },
 
     {
@@ -154,6 +172,7 @@ module.exports.bootstrap = async function (done) {
       fieldName: 'receiverPhone',
       dataType: 'string',
       regex: '^\\d{8,15}$',
+      isRequired: true,
     },
 
     {
@@ -161,6 +180,7 @@ module.exports.bootstrap = async function (done) {
       order: 3,
       fieldName: 'amount',
       dataType: 'number',
+      isRequired: true,
     },
 
     {
@@ -168,6 +188,7 @@ module.exports.bootstrap = async function (done) {
       order: 4,
       fieldName: 'currency',
       dataType: 'string',
+      isRequired: true,
     },
 
     {
@@ -175,6 +196,7 @@ module.exports.bootstrap = async function (done) {
       order: 5,
       fieldName: 'senderId',
       dataType: 'string',
+      isRequired: true,
     },
 
     {
@@ -182,6 +204,7 @@ module.exports.bootstrap = async function (done) {
       order: 6,
       fieldName: 'receiverId',
       dataType: 'string',
+      isRequired: true,
     },
   ]);
 
@@ -259,6 +282,23 @@ module.exports.bootstrap = async function (done) {
         currency: 'VND',
         balance: 1000000,
       }),
+    });
+  }
+
+  // Tạo 1 tài khoản admin nếu chưa có
+  const admin = await Customer.findOne({
+    role: 'admin',
+  });
+  const bcrypt = require('bcrypt');
+
+  if (!admin) {
+    await Customer.create({
+      phone: 'admin',
+      email: 'admin@example.com',
+      name: 'Admin',
+      password: bcrypt.hashSync('1', 10),
+      pin: bcrypt.hashSync('1', 10),
+      role: 'admin',
     });
   }
 

@@ -11,9 +11,15 @@ module.exports.routes = {
   // 'PUT /api/customer/me': 'CustomerController.updateMe',
   // 'PUT /api/customer/change-password': 'CustomerController.changePassword',
   // 'PUT /api/customer/change-pin': 'CustomerController.changePin',
+  'POST /api/customer/wallet': 'PocketController.me',
+  'POST /api/transaction/history': 'TransactionController.history',
 
   // Transaction
   'POST /api/transaction/request': 'TransactionController.request',
   'POST /api/transaction/confirm': 'TransactionController.confirm',
   'POST /api/transaction/verify': 'TransactionController.verify',
+
+  // Service
+  'POST /api/service/get-by-code': 'ServiceController.getByCode',
+  'POST /api/service/get-all': 'ServiceController.getAll',
 };

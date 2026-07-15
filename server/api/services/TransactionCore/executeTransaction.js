@@ -38,7 +38,7 @@ module.exports = async (trail) => {
         const creditPocketId = await resolvePocket(step.credit, variables);
 
         const debitResult = await collection.updateOne(
-          { _id: new ObjectId(debitPocketId), balance: { $gte: amount } },
+          { _id: new ObjectId(String(debitPocketId)), balance: { $gte: amount } },
           { $inc: { balance: -amount } },
           { session }
         );
@@ -48,7 +48,7 @@ module.exports = async (trail) => {
         }
 
         await collection.updateOne(
-          { _id: new ObjectId(creditPocketId) },
+          { _id: new ObjectId(String(creditPocketId)) },
           { $inc: { balance: amount } },
           { session }
         );
@@ -69,8 +69,8 @@ module.exports = async (trail) => {
       const transaction = {
         transRefId: trail.id,
         service: trail.service,
-        senderPocket: transBody.senderPocketId,
-        receiverPocket: transBody.receiverPocketId,
+        senderPocket: new ObjectId(String(transBody.senderPocketId)),
+        receiverPocket: new ObjectId(String(transBody.receiverPocketId)),
         amount: transBody.amount,
         fee: trail.feeSnapshot,
         totalAmount: transBody.amount + trail.feeSnapshot,

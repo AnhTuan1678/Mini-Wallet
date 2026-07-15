@@ -1,0 +1,33 @@
+.sidebar-link {
+  border-radius: 8px;
+  margin-bottom: 4px;
+}
+
+.sidebar-link .MuiListItemIcon-root {
+  min-width: 40px;
+  color: rgba(0, 0, 0, 0.54);
+}
+
+.sidebar-link:hover,
+.sidebar-link.active {
+  background: #eef4ff;
+}
+
+.sidebar-link:hover .MuiListItemIcon-root,
+.sidebar-link.active .MuiListItemIcon-root {
+  color: #1976d2;
+}
+
+.sidebar-link:hover .MuiTypography-root,
+.sidebar-link.active .MuiTypography-root {
+  color: #1976d2;
+  font-weight: 600;
+}
+
+.logout-btn {
+  border-radius: 8px;
+}
+
+.logout-btn:hover {
+  background: rgba(211, 47, 47, 0.08);
+}

@@ -1,31 +1,31 @@
 module.exports = {
   SUCCESS: {
-    code: 200,
+    error: 200,
     message: 'Thành công',
   },
 
   BAD_REQUEST: {
-    code: 400,
+    error: 400,
     message: 'Yêu cầu không hợp lệ',
   },
 
   UNAUTHORIZED: {
-    code: 401,
+    error: 401,
     message: 'Chưa đăng nhập hoặc token không hợp lệ',
   },
 
   FORBIDDEN: {
-    code: 403,
+    error: 403,
     message: 'Không được phép truy cập',
   },
 
   NOT_FOUND: {
-    code: 404,
+    error: 404,
     message: 'Không tìm thấy tài nguyên',
   },
 
   INTERNAL_SERVER_ERROR: {
-    code: 500,
+    error: 500,
     message: 'Lỗi máy chủ',
   },
 };

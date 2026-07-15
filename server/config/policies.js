@@ -14,9 +14,19 @@ module.exports.policies = {
     // delete: 'isLoggedIn',
   },
 
+  PocketController: {
+    me: 'isLoggedIn',
+  },
+
   TransactionController: {
     request: 'isLoggedIn',
     confirm: 'isLoggedIn',
     verify: 'isLoggedIn',
+    history: 'isLoggedIn',
+  },
+
+  ServiceController: {
+    getByCode: true,
+    getAll: true,
   },
 };

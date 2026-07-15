@@ -10,6 +10,11 @@ module.exports = {
       required: true,
     },
 
+    code: {
+      type: 'string',
+      required: true,
+    },
+
     name: {
       type: 'string',
       required: true,
@@ -58,7 +63,8 @@ module.exports = {
       columnType: 'array',
     },
 
-    required: {
+    // Người dùng bắt buộc phải gửi field này trong request hay không
+    isRequired: {
       type: 'boolean',
       defaultsTo: true,
     },

@@ -21,6 +21,9 @@ module.exports = {
       required: true,
     },
 
+    // field bắt buộc phải có trong request hay không
+    // true: bắt buộc phải kiểm tra, nếu không có thì trả về lỗi
+    // false: không kiểm tra nếu không có
     isRequired: {
       type: 'boolean',
       defaultsTo: true,
