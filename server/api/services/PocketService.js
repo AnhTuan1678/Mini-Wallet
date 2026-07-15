@@ -71,4 +71,75 @@ module.exports = {
 
     return pocket.balance;
   },
+
+  getAll: async () => {
+    const wallets = await Pocket.find().populate('owner');
+
+    return wallets
+      .filter((wallet) => wallet.owner)
+      .map((wallet) => ({
+        ...wallet,
+        owner: {
+          id: wallet.owner.id,
+          phone: wallet.owner.phone,
+          name: wallet.owner.name,
+          email: wallet.owner.email,
+          role: wallet.owner.role,
+          status: wallet.owner.status,
+        },
+      }));
+  },
+
+  getTransactions: async (pocketId) => {
+    const pocket = await Pocket.findOne({ id: pocketId });
+
+    if (!pocket) {
+      throw new Error('Không tìm thấy ví');
+    }
+
+    const whereClause = {
+      or: [{ senderPocket: pocketId }, { receiverPocket: pocketId }],
+    };
+
+    const transactions =
+      await Transaction.find(whereClause).sort('createdAt DESC');
+
+    // Populate pockets
+    const pocketIds = [
+      ...transactions.map((t) => t.senderPocket),
+      ...transactions.map((t) => t.receiverPocket),
+    ].filter(Boolean);
+
+    const pockets = await Pocket.find({ id: pocketIds });
+    const pocketMap = {};
+    pockets.forEach((p) => {
+      pocketMap[p.id] = p;
+    });
+
+    // Populate customers for pockets
+    const ownerIds = pockets.map((p) => p.owner).filter(Boolean);
+    const customers = await Customer.find({ id: ownerIds });
+    const customerMap = {};
+    customers.forEach((c) => {
+      customerMap[c.id] = c;
+    });
+
+    const populatedTransactions = transactions.map((t) => ({
+      ...t,
+      senderPocket: pocketMap[t.senderPocket]
+        ? {
+            ...pocketMap[t.senderPocket],
+            owner: customerMap[pocketMap[t.senderPocket].owner] || null,
+          }
+        : null,
+      receiverPocket: pocketMap[t.receiverPocket]
+        ? {
+            ...pocketMap[t.receiverPocket],
+            owner: customerMap[pocketMap[t.receiverPocket].owner] || null,
+          }
+        : null,
+    }));
+
+    return populatedTransactions;
+  },
 };

@@ -9,13 +9,23 @@ module.exports.policies = {
     // update: 'isLoggedIn',
     // changePassword: 'isLoggedIn',
     // changePin: 'isLoggedIn',
-    // getAll: 'isLoggedIn',
+    getAll: ['isLoggedIn', 'isAdmin'],
+    updateStatus: ['isLoggedIn', 'isAdmin'],
     // get: 'isLoggedIn',
     // delete: 'isLoggedIn',
   },
 
   PocketController: {
     me: 'isLoggedIn',
+    getAll: ['isLoggedIn', 'isAdmin'],
+    getTransactions: ['isLoggedIn', 'isAdmin'],
+  },
+
+  CashInController: {
+    request: ['isLoggedIn', 'isAdmin'],
+    confirm: ['isLoggedIn', 'isAdmin'],
+    getHistory: ['isLoggedIn', 'isAdmin'],
+    getServices: ['isLoggedIn', 'isAdmin'],
   },
 
   TransactionController: {
@@ -28,5 +38,6 @@ module.exports.policies = {
   ServiceController: {
     getByCode: true,
     getAll: true,
+    create: true,
   },
 };

@@ -1,63 +1,30 @@
-import { useEffect, useState } from 'react';
 import {
-  Alert,
   Box,
   Card,
   CardContent,
-  Chip,
   CircularProgress,
   Container,
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableRow,
   Typography,
+  Alert,
 } from '@mui/material';
-import { getTransactionHistoryAPI } from '../../services/transactionApi';
-import useAuth from '../../contexts/useAuth';
-
-const STATUS = {
-  done: {
-    label: 'Thành công',
-    color: 'success',
-  },
-  pending: {
-    label: 'Đang xử lý',
-    color: 'warning',
-  },
-  failed: {
-    label: 'Thất bại',
-    color: 'error',
-  },
-};
+import { useTransactionHistory } from '../../hooks/useTransactionHistory';
+import FilterPanel from '../../components/TransactionHistory/FilterPanel';
+import TransactionTable from '../../components/TransactionHistory/TransactionTable';
 
 const TransactionHistory = () => {
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
-  const [pocket, setPocket] = useState(null);
-  const [transactions, setTransactions] = useState([]);
-
-  const { token } = useAuth();
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        setLoading(true);
-
-        const data = await getTransactionHistoryAPI(token);
-
-        setPocket(data.pocket);
-        setTransactions(data.transactions || []);
-      } catch (err) {
-        setError(err.message || 'Không thể tải lịch sử giao dịch');
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchData();
-  }, [token]);
+  const {
+    loading,
+    error,
+    pocket,
+    transactions,
+    filters,
+    setFilters,
+    sortField,
+    setSortField,
+    sortOrder,
+    setSortOrder,
+    resetFilters,
+  } = useTransactionHistory();
 
   if (loading) {
     return (
@@ -95,56 +62,24 @@ const TransactionHistory = () => {
         </Card>
       )}
 
+      {!pocket && (
+        <Alert severity='info' sx={{ mb: 3 }}>
+          Admin đang xem tất cả giao dịch trong hệ thống
+        </Alert>
+      )}
+
+      <FilterPanel
+        filters={filters}
+        setFilters={setFilters}
+        sortField={sortField}
+        setSortField={setSortField}
+        sortOrder={sortOrder}
+        setSortOrder={setSortOrder}
+        resetFilters={resetFilters}
+      />
+
       <Card>
-        <Table>
-          <TableHead>
-            <TableRow>
-              <TableCell>Mã giao dịch</TableCell>
-              <TableCell align='right'>Số tiền</TableCell>
-              <TableCell align='right'>Phí</TableCell>
-              <TableCell align='right'>Tổng</TableCell>
-              <TableCell>Trạng thái</TableCell>
-            </TableRow>
-          </TableHead>
-
-          <TableBody>
-            {transactions.length === 0 ? (
-              <TableRow>
-                <TableCell colSpan={5} align='center'>
-                  Chưa có giao dịch
-                </TableCell>
-              </TableRow>
-            ) : (
-              transactions.map((transaction) => (
-                <TableRow key={transaction.id}>
-                  <TableCell>{transaction.transRefId}</TableCell>
-
-                  <TableCell align='right'>
-                    {transaction.amount.toLocaleString()} đ
-                  </TableCell>
-
-                  <TableCell align='right'>
-                    {transaction.fee.toLocaleString()} đ
-                  </TableCell>
-
-                  <TableCell align='right'>
-                    {transaction.totalAmount.toLocaleString()} đ
-                  </TableCell>
-
-                  <TableCell>
-                    <Chip
-                      size='small'
-                      label={
-                        STATUS[transaction.status]?.label ?? transaction.status
-                      }
-                      color={STATUS[transaction.status]?.color ?? 'default'}
-                    />
-                  </TableCell>
-                </TableRow>
-              ))
-            )}
-          </TableBody>
-        </Table>
+        <TransactionTable transactions={transactions} />
       </Card>
     </Container>
   );

@@ -18,4 +18,25 @@ module.exports = {
       return res.serverError(err);
     }
   },
+
+  async create(req, res) {
+    try {
+      const service = await ServiceService.create(req.body);
+
+      return res.created(service);
+    } catch (err) {
+      if (err.message === 'Service with this code already exists') {
+        return res.conflict({ message: err.message });
+      }
+
+      if (err.message === 'Service configuration validation failed') {
+        return res.badRequest({
+          message: err.message,
+          errors: err.validationErrors,
+        });
+      }
+
+      return res.serverError(err);
+    }
+  },
 };

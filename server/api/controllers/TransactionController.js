@@ -18,7 +18,18 @@ module.exports = {
   },
 
   history: async function (req, res) {
-    const result = await TransactionService.history(req.user);
+    const filters = {
+      status: req.body.status,
+      transRefId: req.body.transRefId,
+      minAmount: req.body.minAmount,
+      maxAmount: req.body.maxAmount,
+      startDate: req.body.startDate,
+      endDate: req.body.endDate,
+      sortField: req.body.sortField,
+      sortOrder: req.body.sortOrder,
+    };
+
+    const result = await TransactionService.history(req.user, filters);
 
     return res.ok(result);
   },

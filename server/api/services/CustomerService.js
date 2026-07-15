@@ -120,4 +120,29 @@ module.exports = {
 
     return updatedCustomer;
   },
+
+  getAll: async () => {
+    const customers = await Customer.find().sort('createdAt DESC');
+    sails.log.info(`Found ${customers.length} customers`);
+
+    return customers.map((customer) => _.omit(customer, ['password', 'pin']));
+  },
+
+  updateStatus: async (id, { status }) => {
+    const customer = await Customer.findOne({ id });
+
+    if (!customer) {
+      throw new Error('Không tìm thấy tài khoản');
+    }
+
+    const validStatuses = ['ACTIVE', 'INACTIVE', 'SUSPENDED', 'BLOCKED'];
+
+    if (!validStatuses.includes(status)) {
+      throw new Error('Trạng thái không hợp lệ');
+    }
+
+    const updatedCustomer = await Customer.updateOne({ id }).set({ status });
+
+    return _.omit(updatedCustomer, ['password', 'pin']);
+  },
 };

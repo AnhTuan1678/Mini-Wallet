@@ -14,7 +14,7 @@ export const loginAPI = async (phone, password) => {
 
   const data = await response.json();
 
-  if (data.error && data.error !== 200) {
+  if (!response.ok || (data.error && data.error !== 200)) {
     console.error('Login failed:', data);
     throw new Error(data.message || 'Đăng nhập thất bại');
   }
@@ -39,7 +39,7 @@ export const registerAPI = async (name, email, phone, password, pin) => {
 
   const data = await response.json();
 
-  if (data.error && data.error !== 200) {
+  if (!response.ok || (data.error && data.error !== 200)) {
     console.error('Register failed:', data);
     throw new Error(data.message || 'Đăng ký thất bại');
   }
@@ -58,7 +58,7 @@ export const verifyTokenAPI = async (token) => {
 
   const data = await response.json();
 
-  if (data.error && data.error !== 200) {
+  if (!response.ok || (data.error && data.error !== 200)) {
     console.error('Verify token failed:', data);
     throw new Error(data.message || 'Xác thực token thất bại');
   }

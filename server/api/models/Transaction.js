@@ -47,5 +47,11 @@ module.exports = {
     message: {
       type: 'string',
     },
+
+    type: {
+      type: 'string',
+      isIn: ['transfer', 'cash-in', 'bill-payment', 'service'],
+      defaultsTo: 'transfer',
+    },
   },
 };

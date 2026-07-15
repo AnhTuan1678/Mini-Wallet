@@ -109,4 +109,38 @@ module.exports = {
       });
     }
   },
+
+  getAll: async (req, res) => {
+    try {
+      const customers = await CustomerService.getAll();
+
+      return res.ok({
+        message: 'Thành công',
+        data: customers,
+      });
+    } catch (err) {
+      sails.log.error(err.message);
+
+      return res.serverError({
+        message: err.message || 'Lỗi hệ thống',
+      });
+    }
+  },
+
+  updateStatus: async (req, res) => {
+    const { id } = req.params;
+    const { status } = req.body;
+
+    try {
+      const customer = await CustomerService.updateStatus(id, { status });
+
+      return res.ok(customer);
+    } catch (err) {
+      sails.log.error(err.message);
+
+      return res.serverError({
+        message: err.message || 'Lỗi hệ thống',
+      });
+    }
+  },
 };

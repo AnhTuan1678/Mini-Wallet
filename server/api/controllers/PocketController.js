@@ -12,6 +12,39 @@ module.exports = {
 
     return res.ok(_.omit(pocket, ['owner', 'checksum']));
   },
-  // getTransaction: async (req, res) => {},
-  // getBalance: async (req, res) => {},
+
+  getAll: async (req, res) => {
+    try {
+      const wallets = await PocketService.getAll();
+
+      return res.ok({
+        message: 'Thành công',
+        data: wallets,
+      });
+    } catch (err) {
+      sails.log.error(err.message);
+
+      return res.serverError({
+        message: err.message || 'Lỗi hệ thống',
+      });
+    }
+  },
+
+  getTransactions: async (req, res) => {
+    try {
+      const { pocketId } = req.body;
+      const transactions = await PocketService.getTransactions(pocketId);
+
+      return res.ok({
+        message: 'Thành công',
+        data: transactions,
+      });
+    } catch (err) {
+      sails.log.error(err.message);
+
+      return res.serverError({
+        message: err.message || 'Lỗi hệ thống',
+      });
+    }
+  },
 };

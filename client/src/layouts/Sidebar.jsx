@@ -17,6 +17,8 @@ import {
   LogoutRounded,
   SendRounded,
   Wallet,
+  AddCircle,
+  AccountBalanceWallet,
 } from '@mui/icons-material';
 import { NavLink } from 'react-router-dom';
 
@@ -62,6 +64,16 @@ const menuAdminItems = [
     text: 'Người dùng',
     icon: <AccountCircle />,
     path: '/admin/users',
+  },
+  {
+    text: 'Nạp tiền',
+    icon: <AccountBalanceWallet />,
+    path: '/admin/cash-in',
+  },
+  {
+    text: 'Tạo dịch vụ',
+    icon: <AddCircle />,
+    path: '/admin/service/create',
   },
 ];
 

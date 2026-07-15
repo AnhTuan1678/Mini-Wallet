@@ -28,6 +28,7 @@ module.exports.bootstrap = async function (done) {
   service = await Service.create({
     code: 'P2P',
     name: 'Peer To Peer',
+    type: 'transfer',
     authMethod: 'pin',
 
     feeType: 'fixed',
@@ -35,6 +36,79 @@ module.exports.bootstrap = async function (done) {
 
     status: true,
   }).fetch();
+
+  // Create default cash-in services
+  const cashInService1 = await Service.create({
+    code: 'CASHIN_FREE',
+    name: 'Nạp tiền miễn phí',
+    type: 'cash-in',
+    authMethod: 'none',
+
+    feeType: 'fixed',
+    feeValue: 0,
+
+    status: true,
+  }).fetch();
+
+  // Create field builders for cash-in service 1
+  await FieldBuilder.createEach([
+    {
+      service: cashInService1.id,
+      order: 1,
+      code: 'receiverPhone',
+      name: 'Số điện thoại người nhận',
+      rule: 'mapping',
+      sourceField: 'receiverPhone',
+      dataType: 'string',
+      isRequired: true,
+    },
+    {
+      service: cashInService1.id,
+      order: 2,
+      code: 'amount',
+      name: 'Số tiền',
+      rule: 'mapping',
+      sourceField: 'amount',
+      dataType: 'number',
+      isRequired: true,
+    },
+  ]);
+
+  const cashInService2 = await Service.create({
+    code: 'CASHIN_FEE',
+    name: 'Nạp tiền có phí',
+    type: 'cash-in',
+    authMethod: 'none',
+
+    feeType: 'fixed',
+    feeValue: 5000,
+
+    status: true,
+  }).fetch();
+
+  // Create field builders for cash-in service 2
+  await FieldBuilder.createEach([
+    {
+      service: cashInService2.id,
+      order: 1,
+      code: 'receiverPhone',
+      name: 'Số điện thoại người nhận',
+      rule: 'mapping',
+      sourceField: 'receiverPhone',
+      dataType: 'string',
+      isRequired: true,
+    },
+    {
+      service: cashInService2.id,
+      order: 2,
+      code: 'amount',
+      name: 'Số tiền',
+      rule: 'mapping',
+      sourceField: 'amount',
+      dataType: 'number',
+      isRequired: true,
+    },
+  ]);
 
   //
   // ===========================

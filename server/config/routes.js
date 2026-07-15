@@ -11,8 +11,18 @@ module.exports.routes = {
   // 'PUT /api/customer/me': 'CustomerController.updateMe',
   // 'PUT /api/customer/change-password': 'CustomerController.changePassword',
   // 'PUT /api/customer/change-pin': 'CustomerController.changePin',
+  'GET /api/customer/all': 'CustomerController.getAll',
+  'PUT /api/customer/:id/status': 'CustomerController.updateStatus',
   'POST /api/customer/wallet': 'PocketController.me',
   'POST /api/transaction/history': 'TransactionController.history',
+  'POST /api/pocket/all': 'PocketController.getAll',
+  'POST /api/pocket/transactions': 'PocketController.getTransactions',
+
+  // Cash-in (Admin only)
+  'POST /api/cash-in/request': 'CashInController.request',
+  'POST /api/cash-in/confirm': 'CashInController.confirm',
+  'GET /api/cash-in/history': 'CashInController.getHistory',
+  'GET /api/cash-in/services': 'CashInController.getServices',
 
   // Transaction
   'POST /api/transaction/request': 'TransactionController.request',
@@ -22,4 +32,5 @@ module.exports.routes = {
   // Service
   'POST /api/service/get-by-code': 'ServiceController.getByCode',
   'POST /api/service/get-all': 'ServiceController.getAll',
+  'POST /api/service/create': 'ServiceController.create',
 };

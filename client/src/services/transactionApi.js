@@ -15,7 +15,7 @@ export const requestTransactionAPI = async (
 
   const data = await response.json();
 
-  if (data.error && data.error !== 200) {
+  if (!response.ok || (data.error && data.error !== 200)) {
     console.error('Request transaction failed:', data);
     throw new Error(data.message || 'Yêu cầu giao dịch thất bại');
   }
@@ -35,7 +35,7 @@ export const confirmTransactionAPI = async (transRefId, token) => {
 
   const data = await response.json();
 
-  if (data.error && data.error !== 200) {
+  if (!response.ok || (data.error && data.error !== 200)) {
     console.error('Confirm transaction failed:', data);
     throw new Error(data.message || 'Xác nhận giao dịch thất bại');
   }
@@ -59,7 +59,7 @@ export const verifyTransactionAPI = async (
 
   const data = await response.json();
 
-  if (data.error && data.error !== 200) {
+  if (!response.ok || (data.error && data.error !== 200)) {
     console.error('Verify transaction failed:', data);
     throw new Error(data.message || 'Xác thực giao dịch thất bại');
   }
@@ -67,18 +67,19 @@ export const verifyTransactionAPI = async (
   return data;
 };
 
-export const getTransactionHistoryAPI = async (token) => {
+export const getTransactionHistoryAPI = async (token, filters = {}) => {
   const response = await fetch(`${API_BASE_URL}/api/transaction/history`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
       Authorization: `Bearer ${token}`,
     },
+    body: JSON.stringify(filters),
   });
 
   const data = await response.json();
 
-  if (data.error && data.error !== 200) {
+  if (!response.ok || (data.error && data.error !== 200)) {
     console.error('Get transaction history failed:', data);
     throw new Error(data.message || 'Lấy lịch sử giao dịch thất bại');
   }

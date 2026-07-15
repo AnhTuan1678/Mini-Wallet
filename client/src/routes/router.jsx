@@ -7,6 +7,10 @@ import Wallet from '../pages/Wallet/Wallet';
 import Auth from '../components/auth';
 import Transfer from '../pages/Transfer/Transfer';
 import WalletList from '../pages/Wallet/WalletList';
+import ServiceCreate from '../pages/Service/ServiceCreate';
+import UserManagement from '../pages/UserManagement/UserManagement';
+import CashInIndex from '../pages/CashIn/CashInIndex';
+import CashIn from '../pages/CashIn/CashIn';
 
 const router = createBrowserRouter([
   {
@@ -47,7 +51,19 @@ const router = createBrowserRouter([
       },
       {
         path: 'users',
-        element: <div>Users</div>,
+        element: <UserManagement />,
+      },
+      {
+        path: 'service/create',
+        element: <ServiceCreate />,
+      },
+      {
+        path: 'cash-in',
+        element: <CashInIndex />,
+      },
+      {
+        path: 'cash-in/:serviceCode',
+        element: <CashIn />,
       },
     ],
   },

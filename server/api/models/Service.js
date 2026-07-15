@@ -11,6 +11,12 @@ module.exports = {
       required: true,
     },
 
+    type: {
+      type: 'string',
+      isIn: ['transfer', 'cash-in', 'bill-payment', 'service'],
+      defaultsTo: 'transfer',
+    },
+
     authMethod: {
       type: 'string',
       isIn: ['pin', 'none', 'otp'],

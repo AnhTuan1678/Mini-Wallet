@@ -11,7 +11,7 @@ export const getServiceByCodeAPI = async (code) => {
 
   const data = await response.json();
 
-  if (data.error && data.error !== 200) {
+  if (!response.ok || (data.error && data.error !== 200)) {
     console.error('Get service by code failed:', data);
     throw new Error(data.message || 'Lấy thông tin dịch vụ thất bại');
   }
@@ -29,7 +29,7 @@ export const getAllServicesAPI = async () => {
 
   const data = await response.json();
 
-  if (data.error && data.error !== 200) {
+  if (!response.ok || (data.error && data.error !== 200)) {
     console.error('Get all services failed:', data);
     throw new Error(data.message || 'Lấy danh sách dịch vụ thất bại');
   }
@@ -37,3 +37,24 @@ export const getAllServicesAPI = async () => {
   return data;
 };
 
+export const createServiceAPI = async (serviceData) => {
+  const response = await fetch(`${API_BASE_URL}/api/service/create`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(serviceData),
+  });
+
+  const data = await response.json();
+
+  if (
+    !response.ok ||
+    (data.error && data.error !== 200 && data.error !== 201)
+  ) {
+    console.error('Create service failed:', data);
+    throw new Error(data.message || 'Tạo dịch vụ thất bại');
+  }
+
+  return data;
+};
