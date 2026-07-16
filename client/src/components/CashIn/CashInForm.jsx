@@ -29,7 +29,7 @@ const CashInForm = ({
         onChange={handleRequestChange}
         margin='normal'
         required
-        inputProps={{ min: 0 }}
+        slotProps={{ htmlInput: { min: 0 } }}
       />
 
       {service && service.feeValue > 0 && (
@@ -50,12 +50,7 @@ const CashInForm = ({
         >
           Quay lại
         </Button>
-        <Button
-          fullWidth
-          type='submit'
-          variant='contained'
-          disabled={loading}
-        >
+        <Button fullWidth type='submit' variant='contained' disabled={loading}>
           {loading ? <CircularProgress size={24} /> : 'Tiếp tục'}
         </Button>
       </Box>

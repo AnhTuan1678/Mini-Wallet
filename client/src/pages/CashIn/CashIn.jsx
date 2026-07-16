@@ -38,7 +38,7 @@ const CashIn = () => {
   if (serviceLoading) {
     return (
       <Container maxWidth='sm'>
-        <Box display='flex' justifyContent='center' py={8}>
+        <Box sx={{ display: 'flex', justifyContent: 'center', py: 8 }}>
           <CircularProgress />
         </Box>
       </Container>

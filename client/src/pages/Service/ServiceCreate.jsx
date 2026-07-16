@@ -31,22 +31,19 @@ const ServiceCreate = () => {
 
   return (
     <Container maxWidth='xl'>
-      <Typography variant='h4' fontWeight={700} mb={3}>
+      <Typography variant='h4' fontWeight={700} sx={{ mb: 3 }}>
         Tạo Dịch Vụ Mới
       </Typography>
-
       {error && (
         <Alert severity='error' sx={{ mb: 3 }}>
           {error}
         </Alert>
       )}
-
       {success && (
         <Alert severity='success' sx={{ mb: 3 }}>
           Tạo dịch vụ thành công!
         </Alert>
       )}
-
       <form onSubmit={handleSubmit}>
         <Grid container spacing={3}>
           <BasicInfoSection formData={formData} handleChange={handleChange} />
@@ -69,8 +66,12 @@ const ServiceCreate = () => {
           />
 
           {/* Submit Button */}
-          <Grid item xs={12}>
-            <Stack direction='row' spacing={2} justifyContent='flex-end'>
+          <Grid size={12}>
+            <Stack
+              direction='row'
+              spacing={2}
+              sx={{ justifyContent: 'flex-end' }}
+            >
               <Button type='submit' variant='contained' size='large'>
                 Tạo Dịch Vụ
               </Button>

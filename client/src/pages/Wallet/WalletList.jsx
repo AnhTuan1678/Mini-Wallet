@@ -127,7 +127,7 @@ const WalletList = () => {
 
   if (loading) {
     return (
-      <Box display='flex' py={8} sx={{ justifyContent: 'center' }}>
+      <Box sx={{ display: 'flex', py: 8, justifyContent: 'center' }}>
         <CircularProgress />
       </Box>
     );
@@ -135,7 +135,7 @@ const WalletList = () => {
 
   return (
     <Container maxWidth='xl'>
-      <Typography variant='h4' fontWeight={700} mb={3}>
+      <Typography variant='h4' fontWeight={700} sx={{ mb: 3 }}>
         Quản lý ví
       </Typography>
 
@@ -227,7 +227,7 @@ const WalletList = () => {
         </DialogTitle>
         <DialogContent>
           {transactionsLoading ? (
-            <Box display='flex' justifyContent='center' py={4}>
+            <Box sx={{ display: 'flex', justifyContent: 'center', py: 4 }}>
               <CircularProgress />
             </Box>
           ) : (

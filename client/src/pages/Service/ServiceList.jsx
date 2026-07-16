@@ -44,7 +44,7 @@ const ServiceList = () => {
 
   if (list.length === 0) {
     return (
-      <Box display='flex' mt={5}>
+      <Box sx={{ display: 'flex', mt: 5 }}>
         <CircularProgress />
       </Box>
     );
@@ -71,13 +71,19 @@ const ServiceList = () => {
 
   return (
     <Container maxWidth='lg'>
-      <Typography variant='h4' fontWeight={700} mb={4}>
+      <Typography variant='h4' fontWeight={700} sx={{ mb: 4 }}>
         Chọn dịch vụ
       </Typography>
-
       <Grid container spacing={3}>
         {list.map((service) => (
-          <Grid xs={12} sm={6} md={4} key={service.code}>
+          <Grid
+            key={service.code}
+            size={{
+              xs: 12,
+              sm: 6,
+              md: 4,
+            }}
+          >
             <Card>
               <CardActionArea
                 onClick={() => {
@@ -90,12 +96,12 @@ const ServiceList = () => {
                 <CardContent>
                   <Typography variant='h6'>{service.name}</Typography>
 
-                  <Typography color='text.secondary' mt={1}>
+                  <Typography color='text.secondary' sx={{ mt: 1 }}>
                     {service.code}
                   </Typography>
 
                   {service.description && (
-                    <Typography variant='body2' mt={2}>
+                    <Typography variant='body2' sx={{ mt: 2 }}>
                       {service.description}
                     </Typography>
                   )}

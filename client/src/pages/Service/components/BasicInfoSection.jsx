@@ -12,14 +12,19 @@ import {
 
 const BasicInfoSection = ({ formData, handleChange }) => {
   return (
-    <Grid item xs={12}>
+    <Grid size={12}>
       <Card>
         <CardContent>
-          <Typography variant='h6' fontWeight={600} mb={2}>
+          <Typography variant='h6' fontWeight={600} sx={{ mb: 2 }}>
             Thông Tin Cơ Bản
           </Typography>
           <Grid container spacing={2}>
-            <Grid item xs={12} md={6}>
+            <Grid
+              size={{
+                xs: 12,
+                md: 6,
+              }}
+            >
               <TextField
                 fullWidth
                 label='Mã'
@@ -28,7 +33,12 @@ const BasicInfoSection = ({ formData, handleChange }) => {
                 required
               />
             </Grid>
-            <Grid item xs={12} md={6}>
+            <Grid
+              size={{
+                xs: 12,
+                md: 6,
+              }}
+            >
               <TextField
                 fullWidth
                 label='Tên'
@@ -37,7 +47,12 @@ const BasicInfoSection = ({ formData, handleChange }) => {
                 required
               />
             </Grid>
-            <Grid item xs={12} md={4}>
+            <Grid
+              size={{
+                xs: 12,
+                md: 4,
+              }}
+            >
               <FormControl fullWidth>
                 <InputLabel>Xác thực</InputLabel>
                 <Select
@@ -51,7 +66,12 @@ const BasicInfoSection = ({ formData, handleChange }) => {
                 </Select>
               </FormControl>
             </Grid>
-            <Grid item xs={12} md={4}>
+            <Grid
+              size={{
+                xs: 12,
+                md: 4,
+              }}
+            >
               <FormControl fullWidth>
                 <InputLabel>Loại phí</InputLabel>
                 <Select
@@ -64,16 +84,28 @@ const BasicInfoSection = ({ formData, handleChange }) => {
                 </Select>
               </FormControl>
             </Grid>
-            <Grid item xs={12} md={4}>
+            <Grid
+              size={{
+                xs: 12,
+                md: 4,
+              }}
+            >
               <TextField
                 fullWidth
                 label='Giá trị phí'
                 type='number'
                 value={formData.feeValue}
-                onChange={(e) => handleChange('feeValue', Number(e.target.value))}
+                onChange={(e) =>
+                  handleChange('feeValue', Number(e.target.value))
+                }
               />
             </Grid>
-            <Grid item xs={12} md={6}>
+            <Grid
+              size={{
+                xs: 12,
+                md: 6,
+              }}
+            >
               <TextField
                 fullWidth
                 label='Phí tối thiểu'
@@ -82,7 +114,12 @@ const BasicInfoSection = ({ formData, handleChange }) => {
                 onChange={(e) => handleChange('feeMin', Number(e.target.value))}
               />
             </Grid>
-            <Grid item xs={12} md={6}>
+            <Grid
+              size={{
+                xs: 12,
+                md: 6,
+              }}
+            >
               <TextField
                 fullWidth
                 label='Phí tối đa'
@@ -91,7 +128,7 @@ const BasicInfoSection = ({ formData, handleChange }) => {
                 onChange={(e) => handleChange('feeMax', Number(e.target.value))}
               />
             </Grid>
-            <Grid item xs={12}>
+            <Grid size={12}>
               <FormControl fullWidth>
                 <InputLabel>Trạng thái</InputLabel>
                 <Select

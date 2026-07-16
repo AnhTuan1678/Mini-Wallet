@@ -40,7 +40,7 @@ const Wallet = () => {
 
   return (
     <Box>
-      <Typography variant='h4' fontWeight={700} mb={3}>
+      <Typography variant='h4' fontWeight={700} sx={{ mb: 3 }}>
         Ví của tôi
       </Typography>
 
@@ -63,7 +63,7 @@ const Wallet = () => {
           <Stack>
             <Stack
               direction='row'
-              mb={4}
+              sx={{ mb: 4 }}
               sx={{ width: '100%', justifyContent: 'space-between' }}
             >
               <Stack direction='row'>

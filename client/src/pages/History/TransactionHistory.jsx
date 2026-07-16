@@ -28,7 +28,7 @@ const TransactionHistory = () => {
 
   if (loading) {
     return (
-      <Box display='flex' py={8} sx={{ justifyContent: 'center' }}>
+      <Box sx={{ display: 'flex', py: 8, justifyContent: 'center' }}>
         <CircularProgress />
       </Box>
     );
@@ -36,7 +36,7 @@ const TransactionHistory = () => {
 
   return (
     <Container maxWidth='lg'>
-      <Typography variant='h4' fontWeight={700} mb={3}>
+      <Typography variant='h4' fontWeight={700} sx={{ mb: 3 }}>
         Lịch sử giao dịch
       </Typography>
 
@@ -55,7 +55,7 @@ const TransactionHistory = () => {
               {pocket.balance.toLocaleString()} {pocket.currency}
             </Typography>
 
-            <Typography variant='body2' color='text.secondary' mt={1}>
+            <Typography variant='body2' color='text.secondary' sx={{ mt: 1 }}>
               Trạng thái: {pocket.status}
             </Typography>
           </CardContent>

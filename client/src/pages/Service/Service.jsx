@@ -25,10 +25,9 @@ const Service = ({
 
   return (
     <Container maxWidth='xl'>
-      <Typography variant='h4' fontWeight={700} mb={3}>
+      <Typography variant='h4' fontWeight={700} sx={{ mb: 3 }}>
         Chi tiết dịch vụ
       </Typography>
-
       <form onSubmit={handleSubmit}>
         <Grid container spacing={3}>
           <BasicInfoSection
@@ -59,8 +58,12 @@ const Service = ({
             removeFieldBuilder={removeFieldBuilder}
           />
 
-          <Grid item xs={12}>
-            <Stack direction='row' spacing={2} justifyContent='flex-end'>
+          <Grid size={12}>
+            <Stack
+              direction='row'
+              spacing={2}
+              sx={{ justifyContent: 'flex-end' }}
+            >
               <Button variant='contained'>Cập nhật</Button>
             </Stack>
           </Grid>

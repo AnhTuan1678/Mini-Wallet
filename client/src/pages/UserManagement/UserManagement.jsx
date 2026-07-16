@@ -136,7 +136,7 @@ const UserManagement = () => {
 
   return (
     <Container maxWidth='xl'>
-      <Typography variant='h4' fontWeight={700} mb={3}>
+      <Typography variant='h4' fontWeight={700} sx={{ mb: 3 }}>
         Quản lý người dùng
       </Typography>
 

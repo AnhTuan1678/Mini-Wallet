@@ -23,7 +23,7 @@ const FilterPanel = ({
   return (
     <Card sx={{ mb: 3 }}>
       <CardContent>
-        <Typography variant='h6' fontWeight={600} mb={2}>
+        <Typography variant='h6' fontWeight={600} sx={{ mb: 2 }}>
           Bộ lọc & Sắp xếp
         </Typography>
 

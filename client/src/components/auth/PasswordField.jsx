@@ -27,17 +27,19 @@ const PasswordField = ({
       type={showPassword ? 'text' : 'password'}
       value={value}
       onChange={onChange}
-      inputprops={{
-        endAdornment: (
-          <InputAdornment position='end'>
-            <IconButton
-              edge='end'
-              onClick={() => setShowPassword((prev) => !prev)}
-            >
-              {showPassword ? <VisibilityOff /> : <Visibility />}
-            </IconButton>
-          </InputAdornment>
-        ),
+      slotProps={{
+        input: {
+          endAdornment: (
+            <InputAdornment position='end'>
+              <IconButton
+                edge='end'
+                onClick={() => setShowPassword((prev) => !prev)}
+              >
+                {showPassword ? <VisibilityOff /> : <Visibility />}
+              </IconButton>
+            </InputAdornment>
+          ),
+        },
       }}
     />
   );

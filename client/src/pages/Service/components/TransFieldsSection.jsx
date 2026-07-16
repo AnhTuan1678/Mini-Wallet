@@ -23,14 +23,16 @@ const TransFieldsSection = ({
   removeTransField,
 }) => {
   return (
-    <Grid item xs={12} sx={{ width: '100%' }}>
+    <Grid sx={{ width: '100%' }} size={12}>
       <Card>
         <CardContent>
           <Stack
             direction='row'
-            justifyContent='space-between'
-            alignItems='center'
-            mb={2}
+            sx={{
+              justifyContent: 'space-between',
+              alignItems: 'center',
+              mb: 2,
+            }}
           >
             <Typography variant='h6' fontWeight={600}>
               Trường giao dịch (TransFields)
@@ -52,7 +54,12 @@ const TransFieldsSection = ({
                 }}
               >
                 <Grid container spacing={2} alignItems='center'>
-                  <Grid item xs={12} md={2}>
+                  <Grid
+                    size={{
+                      xs: 12,
+                      md: 2,
+                    }}
+                  >
                     <TextField
                       fullWidth
                       label='Thứ tự'
@@ -68,7 +75,12 @@ const TransFieldsSection = ({
                       size='small'
                     />
                   </Grid>
-                  <Grid item xs={12} md={3}>
+                  <Grid
+                    size={{
+                      xs: 12,
+                      md: 3,
+                    }}
+                  >
                     <TextField
                       fullWidth
                       label='Tên trường'
@@ -83,7 +95,12 @@ const TransFieldsSection = ({
                       size='small'
                     />
                   </Grid>
-                  <Grid item xs={12} md={2}>
+                  <Grid
+                    size={{
+                      xs: 12,
+                      md: 2,
+                    }}
+                  >
                     <FormControl fullWidth size='small'>
                       <InputLabel>Kiểu dữ liệu</InputLabel>
                       <Select
@@ -104,7 +121,12 @@ const TransFieldsSection = ({
                       </Select>
                     </FormControl>
                   </Grid>
-                  <Grid item xs={12} md={2}>
+                  <Grid
+                    size={{
+                      xs: 12,
+                      md: 2,
+                    }}
+                  >
                     <FormControl fullWidth size='small'>
                       <InputLabel>Bắt buộc</InputLabel>
                       <Select
@@ -123,7 +145,12 @@ const TransFieldsSection = ({
                       </Select>
                     </FormControl>
                   </Grid>
-                  <Grid item xs={12} md={3}>
+                  <Grid
+                    size={{
+                      xs: 12,
+                      md: 3,
+                    }}
+                  >
                     <TextField
                       fullWidth
                       label='Độ dài tối thiểu'
@@ -139,7 +166,12 @@ const TransFieldsSection = ({
                       size='small'
                     />
                   </Grid>
-                  <Grid item xs={12} md={3}>
+                  <Grid
+                    size={{
+                      xs: 12,
+                      md: 3,
+                    }}
+                  >
                     <TextField
                       fullWidth
                       label='Độ dài tối đa'
@@ -155,7 +187,12 @@ const TransFieldsSection = ({
                       size='small'
                     />
                   </Grid>
-                  <Grid item xs={12} md={4}>
+                  <Grid
+                    size={{
+                      xs: 12,
+                      md: 4,
+                    }}
+                  >
                     <TextField
                       fullWidth
                       label='Regex pattern'
@@ -166,7 +203,12 @@ const TransFieldsSection = ({
                       size='small'
                     />
                   </Grid>
-                  <Grid item xs={12} md={2}>
+                  <Grid
+                    size={{
+                      xs: 12,
+                      md: 2,
+                    }}
+                  >
                     <TextField
                       fullWidth
                       label='Mã lỗi'
@@ -183,7 +225,12 @@ const TransFieldsSection = ({
                   </Grid>{' '}
                 </Grid>
               </Box>
-              <Grid item xs={12} md={1}>
+              <Grid
+                size={{
+                  xs: 12,
+                  md: 1,
+                }}
+              >
                 <IconButton
                   onClick={() => removeTransField(index)}
                   color='error'

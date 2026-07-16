@@ -12,7 +12,7 @@ import {
 const CashInServiceList = ({ setService, services, loading }) => {
   if (loading) {
     return (
-      <Box display='flex' justifyContent='center' mt={5}>
+      <Box sx={{ display: 'flex', justifyContent: 'center', mt: 5 }}>
         <CircularProgress />
       </Box>
     );
@@ -20,23 +20,29 @@ const CashInServiceList = ({ setService, services, loading }) => {
 
   return (
     <Container maxWidth='lg'>
-      <Typography variant='h4' fontWeight={700} mb={4}>
+      <Typography variant='h4' fontWeight={700} sx={{ mb: 4 }}>
         Chọn dịch vụ nạp tiền
       </Typography>
-
       <Grid container spacing={3}>
         {services.map((service) => (
-          <Grid item xs={12} sm={6} md={4} key={service.code}>
+          <Grid
+            key={service.code}
+            size={{
+              xs: 12,
+              sm: 6,
+              md: 4,
+            }}
+          >
             <Card>
               <CardActionArea onClick={() => setService(service)}>
                 <CardContent>
                   <Typography variant='h6'>{service.name}</Typography>
 
-                  <Typography color='text.secondary' mt={1}>
+                  <Typography color='text.secondary' sx={{ mt: 1 }}>
                     {service.code}
                   </Typography>
 
-                  <Typography variant='body2' mt={2}>
+                  <Typography variant='body2' sx={{ mt: 2 }}>
                     {service.feeValue > 0
                       ? service.feeType === 'fixed'
                         ? `Phí: ${service.feeValue.toLocaleString()} VNĐ`

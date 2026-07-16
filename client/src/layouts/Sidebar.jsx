@@ -135,7 +135,7 @@ const Sidebar = () => {
       <Divider />
 
       <Box sx={{ p: 2 }}>
-        <Stack direction='row' spacing={2} mb={2}>
+        <Stack direction='row' spacing={2} sx={{ mb: 2 }}>
           <AccountCircle sx={{ fontSize: 40, color: 'text.secondary' }} />
           <Box sx={{ flex: 1 }}>
             <Typography fontWeight={600} noWrap>
