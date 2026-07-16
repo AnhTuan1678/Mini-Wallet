@@ -87,6 +87,11 @@ const menuAdminItems = [
     icon: <AddCircle />,
     path: '/admin/service/create',
   },
+  {
+    text: 'Tạo hóa đơn',
+    icon: <ReceiptLongRounded />,
+    path: '/admin/bill/create',
+  },
 ];
 
 const Sidebar = () => {

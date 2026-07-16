@@ -41,6 +41,10 @@ module.exports.policies = {
     getBillsForUser: 'isLoggedIn',
   },
 
+  BillController: {
+    create: ['isLoggedIn', 'isAdmin'],
+  },
+
   BillerGatewayController: {
     inquiry: true,
     payment: true,

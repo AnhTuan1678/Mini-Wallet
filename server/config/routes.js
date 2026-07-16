@@ -33,10 +33,13 @@ module.exports.routes = {
   'GET /api/biller/all': 'BillerController.getAll',
   'GET /api/biller/:billerId/bills': 'BillerController.getBillsForUser',
   'POST /api/biller': 'BillerController.create',
+  'POST /api/bill': 'BillController.create',
   'POST /api/biller-gateway/inquiry': 'BillerGatewayController.inquiry',
   'POST /api/biller-gateway/payment': 'BillerGatewayController.payment',
-  'POST /api/biller-gateway/:provider/inquiry': 'BillerGatewayController.inquiry',
-  'POST /api/biller-gateway/:provider/payment': 'BillerGatewayController.payment',
+  'POST /api/biller-gateway/:provider/inquiry':
+    'BillerGatewayController.inquiry',
+  'POST /api/biller-gateway/:provider/payment':
+    'BillerGatewayController.payment',
 
   // Service
   'POST /api/service/get-by-code': 'ServiceController.getByCode',
