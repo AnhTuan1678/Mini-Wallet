@@ -1,11 +1,33 @@
 const crypto = require('crypto');
 
 function generateChecksum(data) {
-  return crypto.createHash('sha256').update(JSON.stringify(data)).digest('hex');
+  const secret = sails.config.custom.checksumSecret;
+
+  return crypto
+    .createHmac('sha256', secret)
+    .update(JSON.stringify(data))
+    .digest('hex');
+}
+
+function buildChecksumData(pocket) {
+  return {
+    owner: pocket.owner ? String(pocket.owner) : null,
+    type: pocket.type,
+    currency: pocket.currency,
+    balance: pocket.balance,
+  };
+}
+
+function verifyChecksum(pocket) {
+  const expected = generateChecksum(buildChecksumData(pocket));
+
+  return pocket.checksum === expected;
 }
 
 module.exports = {
   generateChecksum,
+  buildChecksumData,
+  verifyChecksum,
 
   create: async (ownerId, currency = 'VND') => {
     const customer = await Customer.findOne({ id: ownerId });
@@ -75,19 +97,19 @@ module.exports = {
   getAll: async () => {
     const wallets = await Pocket.find().populate('owner');
 
-    return wallets
-      .filter((wallet) => wallet.owner)
-      .map((wallet) => ({
-        ...wallet,
-        owner: {
+    return wallets.map((wallet) => ({
+      ...wallet,
+      owner: wallet.owner
+        ? {
           id: wallet.owner.id,
           phone: wallet.owner.phone,
           name: wallet.owner.name,
           email: wallet.owner.email,
           role: wallet.owner.role,
           status: wallet.owner.status,
-        },
-      }));
+        }
+        : null,
+    }));
   },
 
   getTransactions: async (pocketId) => {
@@ -128,15 +150,15 @@ module.exports = {
       ...t,
       senderPocket: pocketMap[t.senderPocket]
         ? {
-            ...pocketMap[t.senderPocket],
-            owner: customerMap[pocketMap[t.senderPocket].owner] || null,
-          }
+          ...pocketMap[t.senderPocket],
+          owner: customerMap[pocketMap[t.senderPocket].owner] || null,
+        }
         : null,
       receiverPocket: pocketMap[t.receiverPocket]
         ? {
-            ...pocketMap[t.receiverPocket],
-            owner: customerMap[pocketMap[t.receiverPocket].owner] || null,
-          }
+          ...pocketMap[t.receiverPocket],
+          owner: customerMap[pocketMap[t.receiverPocket].owner] || null,
+        }
         : null,
     }));
 

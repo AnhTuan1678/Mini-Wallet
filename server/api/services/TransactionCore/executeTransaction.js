@@ -1,4 +1,5 @@
 const { ObjectId } = require('mongodb');
+const { generateChecksum, buildChecksumData } = require('../PocketService');
 
 module.exports = async (trail) => {
   const transDefinition = await TransDefinition.findOne({
@@ -37,8 +38,12 @@ module.exports = async (trail) => {
         const debitPocketId = await resolvePocket(step.debit, variables);
         const creditPocketId = await resolvePocket(step.credit, variables);
 
+        // Trừ tiền ví gửi
         const debitResult = await collection.updateOne(
-          { _id: new ObjectId(String(debitPocketId)), balance: { $gte: amount } },
+          {
+            _id: new ObjectId(String(debitPocketId)),
+            balance: { $gte: amount },
+          },
           { $inc: { balance: -amount } },
           { session }
         );
@@ -47,9 +52,38 @@ module.exports = async (trail) => {
           throw new Error('Số dư không đủ.');
         }
 
+        // Tính lại checksum ví gửi sau khi trừ tiền
+        const updatedDebitPocket = await collection.findOne(
+          { _id: new ObjectId(String(debitPocketId)) },
+          { session }
+        );
+
+        const debitChecksumData = buildChecksumData(updatedDebitPocket);
+
+        await collection.updateOne(
+          { _id: new ObjectId(String(debitPocketId)) },
+          { $set: { checksum: generateChecksum(debitChecksumData) } },
+          { session }
+        );
+
+        // Cộng tiền ví nhận
         await collection.updateOne(
           { _id: new ObjectId(String(creditPocketId)) },
           { $inc: { balance: amount } },
+          { session }
+        );
+
+        // Tính lại checksum ví nhận sau khi cộng tiền
+        const updatedCreditPocket = await collection.findOne(
+          { _id: new ObjectId(String(creditPocketId)) },
+          { session }
+        );
+
+        const creditChecksumData = buildChecksumData(updatedCreditPocket);
+
+        await collection.updateOne(
+          { _id: new ObjectId(String(creditPocketId)) },
+          { $set: { checksum: generateChecksum(creditChecksumData) } },
           { session }
         );
 
@@ -75,6 +109,7 @@ module.exports = async (trail) => {
         fee: trail.feeSnapshot,
         totalAmount: transBody.amount + trail.feeSnapshot,
         status: 'done',
+        type: trail.inputMessage.header.type || 'transfer',
       };
 
       await client

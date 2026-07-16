@@ -29,21 +29,21 @@ const CashInConfirm = ({
       <Box sx={{ mb: 2 }}>
         <Typography color='text.secondary'>Số tiền:</Typography>
         <Typography fontWeight={600} color='primary'>
-          {confirmData.amount.toLocaleString()} VNĐ
+          {confirmData.amount.toLocaleString()} MMK
         </Typography>
       </Box>
 
       <Box sx={{ mb: 2 }}>
         <Typography color='text.secondary'>Phí:</Typography>
         <Typography fontWeight={600}>
-          {confirmData.fee.toLocaleString()} VNĐ
+          {confirmData.fee.toLocaleString()} MMK
         </Typography>
       </Box>
 
       <Box sx={{ mb: 3 }}>
         <Typography color='text.secondary'>Tổng:</Typography>
         <Typography fontWeight={700} color='primary' variant='h5'>
-          {confirmData.totalAmount.toLocaleString()} VNĐ
+          {confirmData.totalAmount.toLocaleString()} MMK
         </Typography>
       </Box>
 

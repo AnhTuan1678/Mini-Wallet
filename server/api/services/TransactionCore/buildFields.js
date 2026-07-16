@@ -1,17 +1,36 @@
 const query = {
   async queryUserByPhone(phone) {
-    return await Customer.findOne({ phone });
+    if (!phone) {
+      return null;
+    }
+
+    const customer = await Customer.findOne({ phone });
+    sails.log.debug('queryUserByPhone:', customer);
+
+    return customer;
   },
 
   async queryUserById(userId) {
+    if (!userId) {
+      return null;
+    }
+
     return await Customer.findOne({ id: userId });
   },
 
   async queryPocketByUserId(userId) {
+    if (!userId) {
+      return null;
+    }
+
     return await Pocket.findOne({ owner: userId });
   },
 
   async queryPocketByPhone(phone) {
+    if (!phone) {
+      return null;
+    }
+
     const customer = await this.queryUserByPhone(phone);
 
     if (!customer) {
@@ -19,6 +38,14 @@ const query = {
     }
 
     return await Pocket.findOne({ owner: customer.id });
+  },
+
+  async querySystemPocket() {
+    return await Pocket.findOne({ type: 'system' });
+  },
+
+  async queryBankPocket() {
+    return await Pocket.findOne({ type: 'bank' });
   },
 };
 
@@ -36,6 +63,10 @@ async function buildField(field, flatInput) {
 
         const result = await query[field.query](...args);
 
+        if (!result) {
+          return null;
+        }
+
         if (!field.columns || field.columns.length === 0) {
           return result;
         }
@@ -43,7 +74,7 @@ async function buildField(field, flatInput) {
         const output = {};
 
         for (const column of field.columns) {
-          output[column] = result[column];
+          output[column] = result ? result[column] : null;
         }
 
         return output;

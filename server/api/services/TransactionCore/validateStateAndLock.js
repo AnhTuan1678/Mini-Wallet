@@ -1,5 +1,5 @@
-module.exports = async (senderId) => {
-  const pocket = await Pocket.findOne({ owner: senderId });
+module.exports = async (pocketId) => {
+  const pocket = await Pocket.findOne({ id: pocketId });
 
   if (!pocket) {
     throw new Error('Không tìm thấy ví');

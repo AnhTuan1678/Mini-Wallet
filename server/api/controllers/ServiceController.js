@@ -53,7 +53,6 @@ module.exports = {
       if (err.message === 'Service configuration validation failed') {
         return res.badRequest({
           message: err.message,
-          errors: err.validationErrors,
         });
       }
 

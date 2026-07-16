@@ -1,7 +1,7 @@
 import { API_BASE_URL } from '../constants/api';
 
 export const requestTransactionAPI = async (
-  transInputs, // { receiverPhone, serverCode, amount },
+  transInputs, // { receiverPhone, serviceCode, amount },
   token
 ) => {
   const response = await fetch(`${API_BASE_URL}/api/transaction/request`, {

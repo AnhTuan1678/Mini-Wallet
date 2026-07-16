@@ -28,8 +28,10 @@ const ServiceListContent = () => {
       setList(result.services || []);
     };
 
-    fetchServices();
-  }, []);
+    if (!service.name) {
+      fetchServices();
+    }
+  }, [service.name]);
 
   if (list.length === 0) {
     return (

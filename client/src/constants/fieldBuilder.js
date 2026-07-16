@@ -59,6 +59,18 @@ export const QUERY_OPTIONS = [
     inputs: ['receiverPhone'],
     outputs: ['id', 'balance'],
   },
+  {
+    value: 'querySystemPocket',
+    label: 'Ví hệ thống',
+    inputs: [],
+    outputs: ['id', 'balance'],
+  },
+  {
+    value: 'queryBankPocket',
+    label: 'Ví ngân hàng',
+    inputs: [],
+    outputs: ['id', 'balance'],
+  },
 ];
 
 export const AVAILABLE_FIELDS = [

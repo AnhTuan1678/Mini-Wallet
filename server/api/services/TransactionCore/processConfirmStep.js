@@ -1,6 +1,10 @@
 module.exports = async (transInput) => {
   const transRefId = transInput.body.transRefId;
 
+  if (!transRefId) {
+    throw new Error('Mã tham chiếu giao dịch là bắt buộc.');
+  }
+
   const trail = await TransactionTrail.findOne({ id: transRefId });
 
   if (!trail) {

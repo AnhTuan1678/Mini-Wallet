@@ -1,5 +1,3 @@
-const CashInService = require('./CashInService');
-
 module.exports = {
   request: async function (body, user) {
     return await NeonMessage.routeProcess({ TRANSTEP: 1, user, body });
@@ -94,20 +92,52 @@ module.exports = {
     return { pocket, transactions: populatedTransactions };
   },
 
-  // Cash-in methods - delegated to CashInService
+  // Cash-in methods - now using the same framework as transfer
   requestCashIn: async function (body, user) {
-    return await CashInService.request(body);
+    // Add serviceCode to body if not present
+    if (!body.serviceCode) {
+      body.serviceCode = 'CASHIN_FREE'; // Default service
+    }
+
+    return await NeonMessage.routeProcess({ TRANSTEP: 1, user, body });
   },
 
   confirmCashIn: async function (body, user) {
-    return await CashInService.confirm(body);
+    return await NeonMessage.routeProcess({ TRANSTEP: 2, user, body });
   },
 
   getCashInHistory: async function () {
-    return await CashInService.getHistory();
+    const transactions = await Transaction.find({ type: 'cash-in' })
+      .sort('createdAt DESC')
+      .populate('senderPocket')
+      .populate('receiverPocket')
+      .populate('service');
+
+    // Populate owner information
+    const pocketIds = [
+      ...transactions.map((t) => t.senderPocket && t.senderPocket.id),
+      ...transactions.map((t) => t.receiverPocket && t.receiverPocket.id),
+    ].filter(Boolean);
+
+    const pockets = await Pocket.find({ id: pocketIds }).populate('owner');
+    const pocketMap = {};
+    pockets.forEach((p) => {
+      pocketMap[p.id] = p;
+    });
+
+    return transactions.map((t) => ({
+      ...t,
+      senderPocket: pocketMap[t.senderPocket] || null,
+      receiverPocket: pocketMap[t.receiverPocket] || null,
+    }));
   },
 
   getCashInServices: async function () {
-    return await CashInService.getServices();
+    const services = await Service.find({
+      type: 'cash-in',
+      status: true,
+    });
+
+    return services;
   },
 };

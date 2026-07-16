@@ -1,5 +1,5 @@
-module.exports = async (senderId) => {
-  await Pocket.updateOne({ owner: senderId }).set({
+module.exports = async (pocketId) => {
+  await Pocket.updateOne({ id: pocketId }).set({
     state: 'available',
   });
 };

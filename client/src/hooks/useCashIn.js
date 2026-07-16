@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import {
   requestCashInAPI,
   confirmCashInAPI,
+  verifyCashInAPI,
   getCashInServicesAPI,
 } from '../services/cashInApi';
 import useAuth from '../contexts/useAuth';
@@ -100,7 +101,11 @@ export const useCashIn = (serviceCode) => {
       setSuccess('');
 
       try {
+        // Step 2: Confirm transaction
         await confirmCashInAPI(token, { transRefId });
+
+        // Step 3: Verify transaction in the background
+        await verifyCashInAPI(token, { transRefId });
 
         setSuccess('Nạp tiền thành công!');
 

@@ -1,9 +1,10 @@
 const TransactionService = require('../services/TransactionService');
 
 module.exports = {
+  // Deprecated - use /api/transaction/request instead
   request: async (req, res) => {
     try {
-      const result = await TransactionService.requestCashIn(req.body, req.user);
+      const result = await TransactionService.request(req.body, req.user);
 
       return res.ok(result);
     } catch (err) {
@@ -15,9 +16,10 @@ module.exports = {
     }
   },
 
+  // Deprecated - use /api/transaction/confirm instead
   confirm: async (req, res) => {
     try {
-      const result = await TransactionService.confirmCashIn(req.body, req.user);
+      const result = await TransactionService.confirm(req.body, req.user);
 
       return res.ok(result);
     } catch (err) {

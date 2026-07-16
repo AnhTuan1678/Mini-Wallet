@@ -187,11 +187,11 @@ const WalletList = () => {
                     <Chip
                       size='small'
                       label={
-                        ROLE_CONFIG[wallet.owner?.role]?.label ??
-                        wallet.owner?.role
+                        ROLE_CONFIG[wallet.owner?.role || wallet.type]?.label ??
+                        (wallet.owner?.role || wallet.type)
                       }
                       color={
-                        ROLE_CONFIG[wallet.owner?.role]?.color ?? 'default'
+                        ROLE_CONFIG[wallet.owner?.role || wallet.type]?.color ?? 'default'
                       }
                     />
                   </TableCell>
@@ -222,8 +222,7 @@ const WalletList = () => {
         fullWidth
       >
         <DialogTitle>
-          Lịch sử giao dịch - {selectedWallet?.owner?.name} (
-          {selectedWallet?.owner?.phone})
+          Lịch sử giao dịch - {selectedWallet?.owner?.name || (selectedWallet?.type === 'bank' ? 'Ngân hàng' : 'Hệ thống')} {selectedWallet?.owner?.phone ? `(${selectedWallet.owner.phone})` : ''}
         </DialogTitle>
         <DialogContent>
           {transactionsLoading ? (

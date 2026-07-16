@@ -61,7 +61,7 @@ export default function useTransfer(service) {
 
     try {
       const body = {
-        serverCode: service.code,
+        serviceCode: service.code,
       };
 
       service.transFields.forEach((field) => {

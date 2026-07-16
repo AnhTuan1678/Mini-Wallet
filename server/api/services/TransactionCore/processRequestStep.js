@@ -4,8 +4,14 @@ const validateFields = require('./validateFields');
 const validateTransaction = require('./validateTransaction');
 
 module.exports = async (transInput) => {
+  const serviceCode = transInput.body.serviceCode || transInput.body.serverCode;
+
+  if (!serviceCode) {
+    throw new Error('Service code is required');
+  }
+
   const service = await Service.findOne({
-    code: transInput.body.serverCode,
+    code: serviceCode,
   });
 
   if (!service) {
@@ -19,7 +25,10 @@ module.exports = async (transInput) => {
 
   const trail = await TransactionTrail.create({
     service: service.id,
-    inputMessage: { transBody, header: { serviceCode: service.code } },
+    inputMessage: {
+      transBody,
+      header: { serviceCode: service.code, type: service.type },
+    },
     outputMessage: { transBody: {} },
     authMethod: service.authMethod,
   }).fetch();
@@ -76,6 +85,8 @@ module.exports = async (transInput) => {
       fee: feeSnapshot,
       totalAmount,
       transRefId: trail.id,
+      receiverName: transBody.receiverName || null,
+      receiverPhone: transBody.receiverPhone,
     };
   } catch (error) {
     await TransactionTrail.updateOne({

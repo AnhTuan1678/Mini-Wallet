@@ -37,11 +37,12 @@ export const getAllServicesAPI = async () => {
   return data;
 };
 
-export const createServiceAPI = async (serviceData) => {
+export const createServiceAPI = async (serviceData, token) => {
   const response = await fetch(`${API_BASE_URL}/api/service/create`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
+      'Authorization': `Bearer ${token}`,
     },
     body: JSON.stringify(serviceData),
   });
@@ -59,11 +60,12 @@ export const createServiceAPI = async (serviceData) => {
   return data;
 };
 
-export const updateServiceAPI = async (serviceData) => {
+export const updateServiceAPI = async (serviceData, token) => {
   const response = await fetch(`${API_BASE_URL}/api/service/update`, {
     method: 'PUT',
     headers: {
       'Content-Type': 'application/json',
+      'Authorization': `Bearer ${token}`,
     },
     body: JSON.stringify(serviceData),
   });

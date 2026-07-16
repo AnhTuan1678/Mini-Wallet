@@ -2,6 +2,7 @@
 //   global.HttpResponses = require('../api/constants/HttpResponses');
 
 const { generateChecksum } = require('../api/services/PocketService');
+const buildDefaultGlSteps = require('../api/services/buildDefaultGlSteps');
 
 // };
 module.exports.bootstrap = async function (done) {
@@ -72,6 +73,42 @@ module.exports.bootstrap = async function (done) {
       dataType: 'number',
       isRequired: true,
     },
+    {
+      service: cashInService1.id,
+      order: 3,
+      code: 'senderPocket',
+      name: 'Ví ngân hàng (sender)',
+      rule: 'query',
+      query: 'queryBankPocket',
+      queryFields: [],
+      columns: ['id'],
+      dataType: 'string',
+      isRequired: false,
+    },
+    {
+      service: cashInService1.id,
+      order: 4,
+      code: 'receiver',
+      name: 'Người nhận',
+      rule: 'query',
+      query: 'queryUserByPhone',
+      queryFields: ['receiverPhone'],
+      columns: ['id', 'name', 'phone', 'role'],
+      dataType: 'string',
+      isRequired: false,
+    },
+    {
+      service: cashInService1.id,
+      order: 5,
+      code: 'receiverPocket',
+      name: 'Ví của người nhận',
+      rule: 'query',
+      query: 'queryPocketByPhone',
+      queryFields: ['receiverPhone'],
+      columns: ['id', 'balance'],
+      dataType: 'string',
+      isRequired: false,
+    },
   ]);
 
   const cashInService2 = await Service.create({
@@ -107,6 +144,52 @@ module.exports.bootstrap = async function (done) {
       sourceField: 'amount',
       dataType: 'number',
       isRequired: true,
+    },
+    {
+      service: cashInService2.id,
+      order: 3,
+      code: 'senderPocket',
+      name: 'Ví ngân hàng (sender)',
+      rule: 'query',
+      query: 'queryBankPocket',
+      queryFields: [],
+      columns: ['id'],
+      dataType: 'string',
+      isRequired: false,
+    },
+    {
+      service: cashInService2.id,
+      order: 4,
+      code: 'fee',
+      name: 'Phí giao dịch',
+      rule: 'fixed',
+      value: 5000,
+      dataType: 'number',
+      isRequired: false,
+    },
+    {
+      service: cashInService2.id,
+      order: 5,
+      code: 'receiver',
+      name: 'Người nhận',
+      rule: 'query',
+      query: 'queryUserByPhone',
+      queryFields: ['receiverPhone'],
+      columns: ['id', 'name', 'phone', 'role'],
+      dataType: 'string',
+      isRequired: false,
+    },
+    {
+      service: cashInService2.id,
+      order: 6,
+      code: 'receiverPocket',
+      name: 'Ví của người nhận',
+      rule: 'query',
+      query: 'queryPocketByPhone',
+      queryFields: ['receiverPhone'],
+      columns: ['id', 'balance'],
+      dataType: 'string',
+      isRequired: false,
     },
   ]);
 
@@ -283,32 +366,100 @@ module.exports.bootstrap = async function (done) {
   //
   await TransDefinition.create({
     service: service.id,
-    glSteps: [
-      {
-        order: 1,
-        amount: 'amount',
-        debit: {
-          level: 'productLevel',
-          target: 'senderPocketId',
-        },
-        credit: {
-          level: 'productLevel',
-          target: 'receiverPocketId',
-        },
-      },
-      {
-        order: 2,
-        amount: 'debitFee',
-        debit: {
-          level: 'productLevel',
-          target: 'senderPocketId',
-        },
-        credit: {
-          level: 'wallet',
-          target: 'system',
-        },
-      },
-    ],
+    glSteps: buildDefaultGlSteps(service.type, service.feeValue),
+  });
+
+  //
+  // ===========================
+  // Cash-in Service Configuration
+  // ===========================
+  //
+
+  // TransField for cash-in services
+  await TransField.createEach([
+    {
+      service: cashInService1.id,
+      order: 1,
+      code: 'receiverPhone',
+      name: 'Số điện thoại người nhận',
+      dataType: 'string',
+      regex: sails.config.custom.phoneNumberRegex,
+      isRequired: true,
+    },
+    {
+      service: cashInService1.id,
+      order: 2,
+      code: 'amount',
+      name: 'Số tiền',
+      dataType: 'number',
+      isRequired: true,
+    },
+  ]);
+
+  await TransField.createEach([
+    {
+      service: cashInService2.id,
+      order: 1,
+      code: 'receiverPhone',
+      name: 'Số điện thoại người nhận',
+      dataType: 'string',
+      regex: sails.config.custom.phoneNumberRegex,
+      isRequired: true,
+    },
+    {
+      service: cashInService2.id,
+      order: 2,
+      code: 'amount',
+      name: 'Số tiền',
+      dataType: 'number',
+      isRequired: true,
+    },
+  ]);
+
+  // TransValidation for cash-in services
+  await TransValidation.createEach([
+    {
+      service: cashInService1.id,
+      order: 1,
+      validateFunc: 'validateReceiverExists',
+      validateFields: 'receiverPhone',
+      errorCode: 'RECEIVER_NOT_FOUND',
+    },
+    {
+      service: cashInService1.id,
+      order: 2,
+      validateFunc: 'validateReceiverPocketExists',
+      validateFields: 'receiverPhone',
+      errorCode: 'RECEIVER_POCKET_NOT_FOUND',
+    },
+  ]);
+
+  await TransValidation.createEach([
+    {
+      service: cashInService2.id,
+      order: 1,
+      validateFunc: 'validateReceiverExists',
+      validateFields: 'receiverPhone',
+      errorCode: 'RECEIVER_NOT_FOUND',
+    },
+    {
+      service: cashInService2.id,
+      order: 2,
+      validateFunc: 'validateReceiverPocketExists',
+      validateFields: 'receiverPhone',
+      errorCode: 'RECEIVER_POCKET_NOT_FOUND',
+    },
+  ]);
+
+  // TransDefinition for cash-in services
+  await TransDefinition.create({
+    service: cashInService1.id,
+    glSteps: buildDefaultGlSteps(cashInService1.type, cashInService1.feeValue),
+  });
+
+  await TransDefinition.create({
+    service: cashInService2.id,
+    glSteps: buildDefaultGlSteps(cashInService2.type, cashInService2.feeValue),
   });
 
   // create system pocket nếu chưa có
@@ -329,6 +480,24 @@ module.exports.bootstrap = async function (done) {
     });
   }
 
+  // create bank pocket nếu chưa có
+  const bankPocket = await Pocket.findOne({
+    type: 'bank',
+  });
+
+  if (!bankPocket) {
+    await Pocket.create({
+      type: 'bank',
+      balance: 1000000000000000000000, // 1 triệu tỷ VND
+      checksum: generateChecksum({
+        owner: null,
+        type: 'bank',
+        currency: 'VND',
+        balance: 1000000000000000000000,
+      }),
+    });
+  }
+
   // Tạo 1 tài khoản admin nếu chưa có
   const admin = await Customer.findOne({
     role: 'admin',
@@ -343,7 +512,7 @@ module.exports.bootstrap = async function (done) {
       password: bcrypt.hashSync('1', 10),
       pin: bcrypt.hashSync('1', 10),
       role: 'admin',
-    });
+    }).fetch();
   }
 
   done();

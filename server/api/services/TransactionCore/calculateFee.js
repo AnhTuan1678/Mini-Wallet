@@ -3,7 +3,7 @@ module.exports = function ({ type, value = 0, max = Infinity, min = 0 }, amount)
     throw new Error('Amount is required');
   }
 
-  const fee = type === 'percent' ? amount * value : Number(value);
+  const fee = type === 'percent' ? amount * value / 100 : Number(value);
 
   if (fee > max) {
     return max;

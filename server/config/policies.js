@@ -39,5 +39,6 @@ module.exports.policies = {
     getByCode: true,
     getAll: true,
     create: true,
+    update: ['isLoggedIn', 'isAdmin'],
   },
 };

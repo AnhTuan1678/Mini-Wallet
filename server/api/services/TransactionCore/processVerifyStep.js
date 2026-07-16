@@ -1,4 +1,3 @@
-const calculateFee = require('./calculateFee');
 const executeTransaction = require('./executeTransaction');
 const releaseSenderPocket = require('./releaseSenderPocket');
 const validateStateAndLock = require('./validateStateAndLock');
@@ -7,19 +6,24 @@ const verifyPINAsync = require('./verifyPINAsync');
 
 module.exports = async (transInput) => {
   const transRefId = transInput.body.transRefId;
+
+  if (!transRefId) {
+    throw new Error('Mã tham chiếu giao dịch là bắt buộc.');
+  }
+
   const trail = await TransactionTrail.findOne({ id: transRefId });
 
   if (!trail) {
     throw new Error('Không tìm thấy nhật ký giao dịch.');
   }
 
-  const senderId = trail.inputMessage.transBody.senderId;
+  const senderPocketId = trail.inputMessage.transBody.senderPocketId;
 
   if (trail.status !== 'confirmed') {
     throw new Error('Trạng thái giao dịch không hợp lệ.');
   }
 
-  await validateStateAndLock(senderId);
+  await validateStateAndLock(senderPocketId);
 
   try {
     const authMethod = trail.authMethod;
@@ -31,6 +35,7 @@ module.exports = async (transInput) => {
     // const feeSnapshot = await calculateFee(trail.inputMessage.transBody);
 
     await validateTransaction({ trail });
+    await validateTransaction.validatePocketChecksum(trail);
 
     const transaction = await executeTransaction(trail);
 
@@ -79,6 +84,6 @@ module.exports = async (transInput) => {
     });
     throw error;
   } finally {
-    await releaseSenderPocket(senderId);
+    await releaseSenderPocket(senderPocketId);
   }
 };
