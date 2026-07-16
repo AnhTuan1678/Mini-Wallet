@@ -4,12 +4,24 @@ import AddIcon from '@mui/icons-material/Add';
 import useService from '../../../contexts/useService';
 import TransFieldItem from './TransFieldItem';
 
-const TransFieldsSection = () => {
-  const { transField, setTransField, addTransField, removeTransField } =
-    useService();
+const TransFieldsSection = ({
+  transFields,
+  handleTransFieldChange,
+  addTransField,
+  removeTransField,
+}) => {
+  const context = useService();
+  const fields = transFields || context?.transField;
+  const setFields = handleTransFieldChange || context?.setTransField;
+  const addField = addTransField || context?.addTransField;
+  const removeField = removeTransField || context?.removeTransField;
+
+  if (!fields || !setFields || !addField || !removeField) {
+    return null;
+  }
 
   const updateItem = (index, value) => {
-    setTransField((prev) => {
+    setFields((prev) => {
       const next = [...prev];
       next[index] = value;
       return next;
@@ -24,13 +36,13 @@ const TransFieldsSection = () => {
             Trans Fields (Các trường dữ liệu đầu vào của service)
           </Typography>
 
-          {transField.map((field, index) => (
+          {fields.map((field, index) => (
             <TransFieldItem
               key={field.id ?? index}
               field={field}
               index={index}
               onChange={updateItem}
-              onRemove={removeTransField}
+              onRemove={removeField}
             />
           ))}
 
@@ -39,11 +51,7 @@ const TransFieldsSection = () => {
             Độ dài tối đa nếu là 0 thì không giới hạn.
           </Typography>
 
-          <Button
-            startIcon={<AddIcon />}
-            variant='outlined'
-            onClick={addTransField}
-          >
+          <Button startIcon={<AddIcon />} variant='outlined' onClick={addField}>
             Thêm TransField
           </Button>
         </CardContent>

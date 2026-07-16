@@ -11,8 +11,14 @@ import {
 } from '@mui/material';
 import useService from '../../../contexts/useService';
 
-const BasicInfoSection = () => {
-  const { service, changeService } = useService();
+const BasicInfoSection = ({ formData, handleChange }) => {
+  const contextService = useService();
+  const service = formData || contextService?.service;
+  const changeService = handleChange || contextService?.changeService;
+
+  if (!service || !changeService) {
+    return null;
+  }
 
   return (
     <Grid size={12}>

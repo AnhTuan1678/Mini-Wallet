@@ -3,6 +3,7 @@ const releaseSenderPocket = require('./releaseSenderPocket');
 const validateStateAndLock = require('./validateStateAndLock');
 const validateTransaction = require('./validateTransaction');
 const verifyPINAsync = require('./verifyPINAsync');
+const BillPaymentService = require('../BillPaymentService');
 
 module.exports = async (transInput) => {
   const transRefId = transInput.body.transRefId;
@@ -36,6 +37,19 @@ module.exports = async (transInput) => {
 
     await validateTransaction({ trail });
     await validateTransaction.validatePocketChecksum(trail);
+
+    const transBody = trail.inputMessage.transBody;
+
+    if (trail.inputMessage.header.type === 'bill-payment') {
+      const payment = await BillPaymentService.payment({
+        billerId: transBody.billerId,
+        billCode: transBody.billCode,
+        transRefId: trail.id,
+        amount: transBody.amount,
+      });
+      transBody.billerReference = payment.billerReference;
+      await TransactionTrail.updateOne({ id: trail.id }).set({ inputMessage: { ...trail.inputMessage, transBody } });
+    }
 
     const transaction = await executeTransaction(trail);
 

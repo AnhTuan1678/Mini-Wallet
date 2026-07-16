@@ -110,7 +110,7 @@ const TransFieldItem = ({ field, index, onChange, onRemove }) => {
               onChange={(e) =>
                 updateField(
                   'minLength',
-                  e.target.value === '' ? '' : Number(e.target.value)
+                  e.target.value === '' ? 0 : Number(e.target.value)
                 )
               }
             />
@@ -126,7 +126,7 @@ const TransFieldItem = ({ field, index, onChange, onRemove }) => {
               onChange={(e) =>
                 updateField(
                   'maxLength',
-                  e.target.value === '' ? '' : Number(e.target.value)
+                  e.target.value === '' ? 0 : Number(e.target.value)
                 )
               }
             />

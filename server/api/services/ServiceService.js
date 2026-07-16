@@ -1,6 +1,89 @@
 const { validateServiceConfig } = require('./serviceConfigUtils');
 const buildDefaultGlSteps = require('./buildDefaultGlSteps');
 
+/**
+ * Parse a numeric field: return the number if valid, else undefined.
+ * Handles the case where the frontend sends '' (empty string) for optional number fields.
+ */
+function parseOptionalNumber(value) {
+  if (value === '' || value === null || value === undefined) {
+    return undefined;
+  }
+
+  const parsed = Number(value);
+
+  return isNaN(parsed) ? undefined : parsed;
+}
+
+/**
+ * Sanitize a transField object before inserting into DB.
+ * - Removes id (avoid conflict with existing records)
+ * - Converts empty-string minLength/maxLength to undefined (omits from insert)
+ */
+function sanitizeTransField(field, serviceId) {
+  const fieldToCreate = {
+    order: field.order,
+    code: field.code,
+    name: field.name,
+    dataType: field.dataType,
+    isRequired: field.isRequired,
+    regex: field.regex || undefined,
+    errorCode: field.errorCode || undefined,
+    status: field.status,
+    service: serviceId,
+  };
+
+  const minLength = parseOptionalNumber(field.minLength);
+  const maxLength = parseOptionalNumber(field.maxLength);
+
+  if (minLength !== undefined) {
+    fieldToCreate.minLength = minLength;
+  }
+
+  if (maxLength !== undefined) {
+    fieldToCreate.maxLength = maxLength;
+  }
+
+  return fieldToCreate;
+}
+
+/**
+ * Sanitize a fieldBuilder object before inserting into DB.
+ * - Removes id, queryField (legacy), column (legacy), error (not in model)
+ */
+function sanitizeFieldBuilder(builder, serviceId) {
+  return {
+    order: builder.order,
+    code: builder.code,
+    name: builder.name,
+    dataType: builder.dataType,
+    rule: builder.rule,
+    value: builder.value,
+    source: builder.source || undefined,
+    sourceField: builder.sourceField || undefined,
+    query: builder.query || undefined,
+    queryFields: builder.queryFields || undefined,
+    columns: builder.columns || undefined,
+    isRequired: builder.isRequired,
+    service: serviceId,
+  };
+}
+
+/**
+ * Sanitize a validation object before inserting into DB.
+ * - Removes id to avoid conflict with existing records
+ */
+function sanitizeValidation(validation, serviceId) {
+  return {
+    order: validation.order,
+    validateFunc: validation.validateFunc,
+    validateFields: validation.validateFields,
+    errorCode: validation.errorCode || undefined,
+    status: validation.status,
+    service: serviceId,
+  };
+}
+
 module.exports = {
   async getByCode(code) {
     const service = await Service.findOne({ code }).populate('fieldBuilders');
@@ -19,7 +102,7 @@ module.exports = {
       .populate('transFields')
       .populate('validations');
 
-    // return services.map(filterRequiredFields);
+    // return services.map(filterRequiredFields);\
     return services;
   },
 
@@ -56,10 +139,7 @@ module.exports = {
     if (validations && validations.length > 0) {
       await Promise.all(
         validations.map((validation) =>
-          TransValidation.create({
-            ...validation,
-            service: service.id,
-          })
+          TransValidation.create(sanitizeValidation(validation, service.id))
         )
       );
     }
@@ -68,10 +148,7 @@ module.exports = {
     if (transFields && transFields.length > 0) {
       await Promise.all(
         transFields.map((field) =>
-          TransField.create({
-            ...field,
-            service: service.id,
-          })
+          TransField.create(sanitizeTransField(field, service.id))
         )
       );
     }
@@ -80,10 +157,7 @@ module.exports = {
     if (fieldBuilders && fieldBuilders.length > 0) {
       await Promise.all(
         fieldBuilders.map((builder) =>
-          FieldBuilder.create({
-            ...builder,
-            service: service.id,
-          })
+          FieldBuilder.create(sanitizeFieldBuilder(builder, service.id))
         )
       );
     }
@@ -147,10 +221,7 @@ module.exports = {
     if (validations && validations.length > 0) {
       await Promise.all(
         validations.map((validation) =>
-          TransValidation.create({
-            ...validation,
-            service: id,
-          })
+          TransValidation.create(sanitizeValidation(validation, id))
         )
       );
     }
@@ -158,10 +229,7 @@ module.exports = {
     if (transFields && transFields.length > 0) {
       await Promise.all(
         transFields.map((field) =>
-          TransField.create({
-            ...field,
-            service: id,
-          })
+          TransField.create(sanitizeTransField(field, id))
         )
       );
     }
@@ -169,19 +237,17 @@ module.exports = {
     if (fieldBuilders && fieldBuilders.length > 0) {
       await Promise.all(
         fieldBuilders.map((builder) =>
-          FieldBuilder.create({
-            ...builder,
-            service: id,
-          })
+          FieldBuilder.create(sanitizeFieldBuilder(builder, id))
         )
       );
     }
 
     // Auto-generate glSteps if not provided
     const resolvedType = serviceFields.type || existingService.type;
-    const resolvedFeeValue = serviceFields.feeValue !== undefined
-      ? serviceFields.feeValue
-      : existingService.feeValue;
+    const resolvedFeeValue =
+      serviceFields.feeValue !== undefined
+        ? serviceFields.feeValue
+        : existingService.feeValue;
     const glSteps =
       definition && definition.glSteps && definition.glSteps.length > 0
         ? definition.glSteps

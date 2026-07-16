@@ -12,13 +12,19 @@ const reorder = (list) =>
     order: index + 1,
   }));
 
-export default function ServiceProvider({ children }) {
+export default function ServiceProvider({ children, initialState = null }) {
   const [loading, setLoading] = useState(false);
 
-  const [service, setService] = useState(INITIAL_SERVICE);
-  const [transField, setTransField] = useState([]);
-  const [fieldBuilder, setFieldBuilder] = useState([]);
-  const [transValidation, setTransValidation] = useState([]);
+  const [service, setService] = useState(
+    initialState?.service || INITIAL_SERVICE
+  );
+  const [transField, setTransField] = useState(initialState?.transField || []);
+  const [fieldBuilder, setFieldBuilder] = useState(
+    initialState?.fieldBuilder || []
+  );
+  const [transValidation, setTransValidation] = useState(
+    initialState?.transValidation || []
+  );
 
   const changeService = (key, value) => {
     setService((prev) => ({

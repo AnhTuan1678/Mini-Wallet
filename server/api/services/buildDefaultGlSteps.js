@@ -31,7 +31,8 @@ module.exports = function buildDefaultGlSteps(serviceType, feeValue) {
       return steps;
     }
 
-    case 'transfer': {
+    case 'transfer':
+    case 'bill-payment': {
       const steps = [
         {
           order: 1,

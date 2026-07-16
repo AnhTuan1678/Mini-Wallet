@@ -16,6 +16,7 @@ import {
   History,
   LogoutRounded,
   SendRounded,
+  ReceiptLongRounded,
   Wallet,
   AddCircle,
   AccountBalanceWallet,
@@ -32,6 +33,11 @@ const menuCustomerItems = [
     text: 'Chuyển tiền',
     icon: <SendRounded />,
     path: '/transfer',
+  },
+  {
+    text: 'Thanh toán hóa đơn',
+    icon: <ReceiptLongRounded />,
+    path: '/bill-payment',
   },
   {
     text: 'Ví',

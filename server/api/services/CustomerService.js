@@ -44,6 +44,7 @@ module.exports = {
 
     const payload = {
       id: customer.id,
+      name: customer.name,
       email: customer.email,
       phone: customer.phone,
       role: customer.role,

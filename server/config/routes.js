@@ -29,6 +29,15 @@ module.exports.routes = {
   'POST /api/transaction/confirm': 'TransactionController.confirm',
   'POST /api/transaction/verify': 'TransactionController.verify',
 
+  // Billers / mock biller
+  'GET /api/biller/all': 'BillerController.getAll',
+  'GET /api/biller/:billerId/bills': 'BillerController.getBillsForUser',
+  'POST /api/biller': 'BillerController.create',
+  'POST /api/biller-gateway/inquiry': 'BillerGatewayController.inquiry',
+  'POST /api/biller-gateway/payment': 'BillerGatewayController.payment',
+  'POST /api/biller-gateway/:provider/inquiry': 'BillerGatewayController.inquiry',
+  'POST /api/biller-gateway/:provider/payment': 'BillerGatewayController.payment',
+
   // Service
   'POST /api/service/get-by-code': 'ServiceController.getByCode',
   'POST /api/service/get-all': 'ServiceController.getAll',

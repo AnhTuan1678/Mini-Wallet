@@ -47,6 +47,16 @@ const query = {
   async queryBankPocket() {
     return await Pocket.findOne({ type: 'bank' });
   },
+
+  async queryBillerPocketById(billerId) {
+    if (!billerId) {return null;}
+
+    const biller = await Biller.findOne({ id: billerId, status: true });
+
+    if (!biller || !biller.pocket) {return null;}
+
+    return await Pocket.findOne({ id: biller.pocket });
+  },
 };
 
 async function buildField(field, flatInput) {

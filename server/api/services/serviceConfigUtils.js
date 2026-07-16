@@ -136,6 +136,34 @@ const validateServiceConfig = (serviceData) => {
             `transFields[${index}].dataType must be one of: string, number, boolean, date`
           );
         }
+
+        if (field.minLength !== undefined && field.minLength !== '') {
+          if (typeof field.minLength !== 'number' || field.minLength < 0) {
+            errors.push(
+              `transFields[${index}].minLength must be a non-negative number or empty`
+            );
+          }
+        }
+
+        if (field.maxLength !== undefined && field.maxLength !== '') {
+          if (typeof field.maxLength !== 'number' || field.maxLength < 0) {
+            errors.push(
+              `transFields[${index}].maxLength must be a non-negative number or empty`
+            );
+          }
+        }
+
+        if (
+          field.minLength !== undefined &&
+          field.minLength !== '' &&
+          field.maxLength !== undefined &&
+          field.maxLength !== '' &&
+          field.minLength > field.maxLength
+        ) {
+          errors.push(
+            `transFields[${index}].minLength cannot be greater than maxLength`
+          );
+        }
       });
     }
   }

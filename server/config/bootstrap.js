@@ -515,5 +515,109 @@ module.exports.bootstrap = async function (done) {
     }).fetch();
   }
 
+  // Mock billers/hóa đơn mẫu: mỗi biller có URL inquiry/payment riêng.
+  const gatewayUrl = `http://localhost:${sails.config.port || 1337}/api/biller-gateway`;
+  const ensureDemoBiller = async ({ name, provider }) => {
+    const existing = await Biller.findOne({ name });
+
+    if (existing) {return existing;}
+
+    const pocket = await Pocket.create({
+      type: 'biller',
+      balance: 0,
+      checksum: generateChecksum({ owner: null, type: 'biller', currency: 'VND', balance: 0 }),
+    }).fetch();
+
+    return await Biller.create({
+      name,
+      inquiryUrl: `${gatewayUrl}/${provider}/inquiry`,
+      paymentUrl: `${gatewayUrl}/${provider}/payment`,
+      pocket: pocket.id,
+    }).fetch();
+  };
+
+  const [electricityBiller, waterBiller, internetBiller] = await Promise.all([
+    ensureDemoBiller({ name: 'Điện lực Mini Wallet', provider: 'electricity' }),
+    ensureDemoBiller({ name: 'Nước sạch Mini Wallet', provider: 'water' }),
+    ensureDemoBiller({ name: 'Internet Mini Wallet', provider: 'internet' }),
+  ]);
+
+  const billService = await Service.create({
+    code: 'BILL_PAYMENT',
+    name: 'Thanh toán hóa đơn',
+    type: 'bill-payment',
+    action: 'billerTrans',
+    authMethod: 'pin',
+    feeType: 'fixed',
+    feeValue: 1000,
+    status: true,
+  }).fetch();
+
+  await FieldBuilder.createEach([
+    { service: billService.id, order: 1, code: 'senderId', name: 'Người thanh toán', dataType: 'string', rule: 'mapping', sourceField: 'senderId', isRequired: false },
+    { service: billService.id, order: 2, code: 'billerId', name: 'Nhà cung cấp', dataType: 'string', rule: 'mapping', sourceField: 'billerId', isRequired: true },
+    { service: billService.id, order: 3, code: 'billCode', name: 'Mã hóa đơn', dataType: 'string', rule: 'mapping', sourceField: 'billCode', isRequired: true },
+    { service: billService.id, order: 4, code: 'senderPocket', name: 'Ví người thanh toán', dataType: 'string', rule: 'query', query: 'queryPocketByUserId', queryFields: ['senderId'], columns: ['id'], isRequired: false },
+    { service: billService.id, order: 5, code: 'receiverPocket', name: 'Ví biller', dataType: 'string', rule: 'query', query: 'queryBillerPocketById', queryFields: ['billerId'], columns: ['id'], isRequired: false },
+  ]);
+  await TransField.createEach([
+    { service: billService.id, order: 1, code: 'billerId', name: 'Nhà cung cấp', dataType: 'string', isRequired: true },
+    { service: billService.id, order: 2, code: 'billCode', name: 'Mã hóa đơn', dataType: 'string', minLength: 3, isRequired: true },
+  ]);
+  await TransValidation.create({ service: billService.id, order: 1, validateFunc: 'validateSenderAccountSufficiency', validateFields: 'senderId:amount:debitFee', errorCode: 'INSUFFICIENT_BALANCE' });
+  await TransDefinition.create({ service: billService.id, glSteps: buildDefaultGlSteps('bill-payment', 1000) });
+
+  // Tạo 2 khách hàng demo nếu chưa có (để gán hóa đơn)
+  let demoCustomer1 = await Customer.findOne({ phone: 'demo01' });
+
+  if (!demoCustomer1) {
+    demoCustomer1 = await Customer.create({
+      phone: 'demo01',
+      name: 'Nguyễn Văn A',
+      email: 'nguyenvana@example.com',
+      password: bcrypt.hashSync('1', 10),
+      pin: bcrypt.hashSync('1', 10),
+    }).fetch();
+    await Pocket.create({
+      owner: demoCustomer1.id,
+      type: 'customer',
+      balance: 0,
+      checksum: generateChecksum({ owner: demoCustomer1.id, type: 'customer', currency: 'VND', balance: 0 }),
+    });
+  }
+
+  let demoCustomer2 = await Customer.findOne({ phone: 'demo02' });
+
+  if (!demoCustomer2) {
+    demoCustomer2 = await Customer.create({
+      phone: 'demo02',
+      name: 'Trần Thị B',
+      email: 'tranthib@example.com',
+      password: bcrypt.hashSync('1', 10),
+      pin: bcrypt.hashSync('1', 10),
+    }).fetch();
+    await Pocket.create({
+      owner: demoCustomer2.id,
+      type: 'customer',
+      balance: 0,
+      checksum: generateChecksum({ owner: demoCustomer2.id, type: 'customer', currency: 'VND', balance: 0 }),
+    });
+  }
+
+  const demoBills = [
+    { biller: electricityBiller.id, customer: demoCustomer1.id, billCode: 'ELEC-001', name: 'Tiền điện tháng 7', amount: 150000 },
+    { biller: electricityBiller.id, customer: demoCustomer2.id, billCode: 'ELEC-002', name: 'Tiền điện tháng 7', amount: 285000 },
+    { biller: waterBiller.id, customer: demoCustomer1.id, billCode: 'WATER-001', name: 'Tiền nước tháng 7', amount: 97000 },
+    { biller: waterBiller.id, customer: demoCustomer2.id, billCode: 'WATER-002', name: 'Tiền nước tháng 7', amount: 126000 },
+    { biller: internetBiller.id, customer: demoCustomer1.id, billCode: 'NET-001', name: 'Cước Internet tháng 7', amount: 220000 },
+    { biller: internetBiller.id, customer: demoCustomer2.id, billCode: 'NET-002', name: 'Cước Internet tháng 7', amount: 330000 },
+  ];
+
+  for (const billData of demoBills) {
+    const existingBill = await Bill.findOne({ biller: billData.biller, billCode: billData.billCode });
+
+    if (!existingBill) {await Bill.create(billData);}
+  }
+
   done();
 };

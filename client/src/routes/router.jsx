@@ -12,6 +12,8 @@ import UserManagement from '../pages/UserManagement/UserManagement';
 import CashInIndex from '../pages/CashIn/CashInIndex';
 import CashIn from '../pages/CashIn/CashIn';
 import ServiceList from '../pages/Service/ServiceList';
+import BillPayment from '../pages/BillPayment/BillPayment';
+import ServiceProvider from '../contexts/ServiceProvider';
 
 const router = createBrowserRouter([
   {
@@ -35,6 +37,10 @@ const router = createBrowserRouter([
         path: 'transfer',
         element: <Transfer />,
       },
+      {
+        path: 'bill-payment',
+        element: <BillPayment />,
+      },
     ],
   },
   {
@@ -56,7 +62,11 @@ const router = createBrowserRouter([
       },
       {
         path: 'service/create',
-        element: <ServiceCreate />,
+        element: (
+          <ServiceProvider>
+            <ServiceCreate />
+          </ServiceProvider>
+        ),
       },
       {
         path: 'cash-in',

@@ -10,7 +10,7 @@ import {
   Typography,
 } from '@mui/material';
 
-import { getAllServicesAPI } from '../../services/serviceApi';  
+import { getAllServicesAPI } from '../../services/serviceApi';
 
 import Service from './Service';
 
@@ -48,7 +48,18 @@ const ServiceListContent = () => {
   }
 
   if (service.name) {
-    return <Service />;
+    return (
+      <ServiceProvider
+        initialState={{
+          service,
+          transField: service.transFields || [],
+          fieldBuilder: service.fieldBuilders || [],
+          transValidation: service.validations || [],
+        }}
+      >
+        <Service />
+      </ServiceProvider>
+    );
   }
 
   return (

@@ -19,5 +19,10 @@ module.exports = {
       model: 'pocket',
       required: true,
     },
+
+    status: {
+      type: 'boolean',
+      defaultsTo: true,
+    },
   },
 };

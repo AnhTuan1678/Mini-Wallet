@@ -35,6 +35,17 @@ module.exports.policies = {
     history: 'isLoggedIn',
   },
 
+  BillerController: {
+    getAll: 'isLoggedIn',
+    create: ['isLoggedIn', 'isAdmin'],
+    getBillsForUser: 'isLoggedIn',
+  },
+
+  BillerGatewayController: {
+    inquiry: true,
+    payment: true,
+  },
+
   ServiceController: {
     getByCode: true,
     getAll: true,

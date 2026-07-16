@@ -2,6 +2,7 @@ const buildFields = require('./buildFields');
 const calculateFee = require('./calculateFee');
 const validateFields = require('./validateFields');
 const validateTransaction = require('./validateTransaction');
+const BillPaymentService = require('../BillPaymentService');
 
 module.exports = async (transInput) => {
   const serviceCode = transInput.body.serviceCode || transInput.body.serverCode;
@@ -17,6 +18,8 @@ module.exports = async (transInput) => {
   if (!service) {
     throw new Error('Service not found');
   }
+
+  if (!service.status) {throw new Error('Dịch vụ đang tạm ngừng.');}
 
   const transBody = await buildFields({
     service,
@@ -35,6 +38,22 @@ module.exports = async (transInput) => {
 
   try {
     await validateFields({ service, transBody });
+
+    let biller = null;
+
+    if (service.type === 'bill-payment' || service.action === 'billerTrans') {
+      const inquiry = await BillPaymentService.inquiry({
+        billerId: transBody.billerId,
+        billCode: transBody.billCode,
+        transRefId: trail.id,
+      });
+      transBody.amount = inquiry.amount;
+      transBody.receiverPocketId = inquiry.biller.pocket;
+      transBody.billerName = inquiry.biller.name;
+      transBody.billName = inquiry.billName;
+      biller = inquiry.biller;
+      await TransactionTrail.updateOne({ id: trail.id }).set({ inputMessage: { ...trail.inputMessage, transBody } });
+    }
 
     const feeSnapshot = calculateFee(
       {
@@ -57,6 +76,8 @@ module.exports = async (transInput) => {
         amount: transBody.amount,
         fee: feeSnapshot,
         totalAmount,
+        billCode: transBody.billCode || null,
+        billerName: (biller && biller.name) || null,
       },
     };
 
@@ -87,6 +108,8 @@ module.exports = async (transInput) => {
       transRefId: trail.id,
       receiverName: transBody.receiverName || null,
       receiverPhone: transBody.receiverPhone,
+      billCode: transBody.billCode || null,
+      billerName: (biller && biller.name) || null,
     };
   } catch (error) {
     await TransactionTrail.updateOne({

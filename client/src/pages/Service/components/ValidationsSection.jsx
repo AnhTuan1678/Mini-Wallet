@@ -11,9 +11,17 @@ import {
 import { PREDEFINED_VALIDATIONS } from '../../../constants/PREDEFINED_VALIDATIONS';
 import useService from '../../../contexts/useService';
 
-const ValidationsSection = () => {
-  const { transValidation: selectedValidations, handleValidationToggle } =
-    useService();
+const ValidationsSection = ({
+  selectedValidations,
+  handleValidationToggle,
+}) => {
+  const context = useService();
+  const validations = selectedValidations || context?.transValidation;
+  const toggle = handleValidationToggle || context?.handleValidationToggle;
+
+  if (!validations || !toggle) {
+    return null;
+  }
 
   return (
     <Grid size={12} sx={{ width: '100%' }}>
@@ -35,10 +43,10 @@ const ValidationsSection = () => {
                 <FormControlLabel
                   control={
                     <Checkbox
-                      checked={selectedValidations.some(
+                      checked={validations.some(
                         (item) => item.validateFunc === rule.validateFunc
                       )}
-                      onChange={() => handleValidationToggle(rule)}
+                      onChange={() => toggle(rule)}
                     />
                   }
                   label={rule.description}
@@ -47,7 +55,7 @@ const ValidationsSection = () => {
             ))}
           </Grid>
 
-          {selectedValidations.length > 0 && (
+          {validations.length > 0 && (
             <Box
               sx={{
                 mt: 2,
@@ -61,10 +69,10 @@ const ValidationsSection = () => {
                 color='text.secondary'
                 sx={{ mb: 1 }}
               >
-                Đã chọn ({selectedValidations.length}):
+                Đã chọn ({validations.length}):
               </Typography>
 
-              {selectedValidations.map((validation, index) => (
+              {validations.map((validation, index) => (
                 <Typography
                   key={validation.validateFunc ?? index}
                   variant='body2'

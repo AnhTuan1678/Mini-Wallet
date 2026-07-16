@@ -49,6 +49,13 @@ module.exports = {
       defaultsTo: true,
     },
 
+    // billerTrans: service cần gọi inquiry/payment URL của Biller ở runtime.
+    action: {
+      type: 'string',
+      isIn: ['none', 'billerTrans'],
+      defaultsTo: 'none',
+    },
+
     fieldBuilders: {
       collection: 'fieldbuilder',
       via: 'service',

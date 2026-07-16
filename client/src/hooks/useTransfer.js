@@ -35,14 +35,14 @@ export default function useTransfer(service) {
     navigate('/transactions-history');
   }, [navigate]);
 
-  const handleRequestChange = (e) => {
+  const handleRequestChange = useCallback((e) => {
     const { name, value } = e.target;
 
     setRequestData((prev) => ({
       ...prev,
       [name]: value,
     }));
-  };
+  }, []);
 
   const handlePinChange = (e) => {
     const value = e.target.value.replace(/\D/g, '');
