@@ -7,23 +7,26 @@ import {
   Grid,
   Typography,
 } from '@mui/material';
-import { PREDEFINED_VALIDATIONS } from '../../../constants/PREDEFINED_VALIDATIONS';
 
-const ValidationsSection = ({
-  selectedValidations,
-  handleValidationToggle,
-}) => {
+import { PREDEFINED_VALIDATIONS } from '../../../constants/PREDEFINED_VALIDATIONS';
+import useService from '../../../contexts/useService';
+
+const ValidationsSection = () => {
+  const { transValidation: selectedValidations, handleValidationToggle } =
+    useService();
+
   return (
-    <Grid sx={{ width: '100%' }} size={12}>
+    <Grid size={12} sx={{ width: '100%' }}>
       <Card>
         <CardContent>
-          <Typography variant='h6' fontWeight={600} sx={{ mb: 2 }}>
-            Validations
+          <Typography variant='h6' sx={{ mb: 2, fontWeight: 600 }}>
+            Validations (Các rule validate cho giao dịch)
           </Typography>
+
           <Grid container spacing={2}>
             {PREDEFINED_VALIDATIONS.map((rule) => (
               <Grid
-                key={rule.id}
+                key={rule.validateFunc}
                 size={{
                   xs: 12,
                   md: 6,
@@ -33,7 +36,7 @@ const ValidationsSection = ({
                   control={
                     <Checkbox
                       checked={selectedValidations.some(
-                        (v) => v.validateFunc === rule.validateFunc
+                        (item) => item.validateFunc === rule.validateFunc
                       )}
                       onChange={() => handleValidationToggle(rule)}
                     />
@@ -43,8 +46,16 @@ const ValidationsSection = ({
               </Grid>
             ))}
           </Grid>
+
           {selectedValidations.length > 0 && (
-            <Box sx={{ mt: 2, p: 2, bgcolor: 'grey.50', borderRadius: 1 }}>
+            <Box
+              sx={{
+                mt: 2,
+                p: 2,
+                bgcolor: 'grey.50',
+                borderRadius: 1,
+              }}
+            >
               <Typography
                 variant='subtitle2'
                 color='text.secondary'
@@ -52,8 +63,13 @@ const ValidationsSection = ({
               >
                 Đã chọn ({selectedValidations.length}):
               </Typography>
+
               {selectedValidations.map((validation, index) => (
-                <Typography key={index} variant='body2' sx={{ ml: 2 }}>
+                <Typography
+                  key={validation.validateFunc ?? index}
+                  variant='body2'
+                  sx={{ ml: 2 }}
+                >
                   {index + 1}. {validation.validateFunc} -{' '}
                   {validation.validateFields}
                 </Typography>

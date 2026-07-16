@@ -39,4 +39,25 @@ module.exports = {
       return res.serverError(err);
     }
   },
+
+  async update(req, res) {
+    try {
+      const service = await ServiceService.update(req.body);
+
+      return res.ok(service);
+    } catch (err) {
+      if (err.message === 'Service not found') {
+        return res.notFound({ message: err.message });
+      }
+
+      if (err.message === 'Service configuration validation failed') {
+        return res.badRequest({
+          message: err.message,
+          errors: err.validationErrors,
+        });
+      }
+
+      return res.serverError(err);
+    }
+  },
 };

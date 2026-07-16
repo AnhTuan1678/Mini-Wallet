@@ -58,3 +58,22 @@ export const createServiceAPI = async (serviceData) => {
 
   return data;
 };
+
+export const updateServiceAPI = async (serviceData) => {
+  const response = await fetch(`${API_BASE_URL}/api/service/update`, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(serviceData),
+  });
+
+  const data = await response.json();
+
+  if (!response.ok || (data.error && data.error !== 200)) {
+    console.error('Update service failed:', data);
+    throw new Error(data.message || 'Cập nhật dịch vụ thất bại');
+  }
+
+  return data;
+};

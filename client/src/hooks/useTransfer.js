@@ -64,7 +64,7 @@ export default function useTransfer(service) {
         serverCode: service.code,
       };
 
-      service.fieldBuilders.forEach((field) => {
+      service.transFields.forEach((field) => {
         let value = requestData[field.code];
 
         if (field.dataType === 'number') {
@@ -73,6 +73,8 @@ export default function useTransfer(service) {
 
         body[field.code] = value;
       });
+
+      console.log('Request body:', body);
 
       const result = await requestTransactionAPI(body, token);
 

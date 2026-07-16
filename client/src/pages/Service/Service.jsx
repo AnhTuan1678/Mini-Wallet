@@ -1,26 +1,44 @@
 import { Button, Container, Grid, Stack, Typography } from '@mui/material';
 
 import BasicInfoSection from './components/BasicInfoSection';
-import ValidationsSection from './components/ValidationsSection';
-import TransFieldsSection from './components/TransFieldsSection';
 import FieldBuildersSection from './components/FieldBuildersSection';
+import TransFieldsSection from './components/TransFieldsSection';
+import ValidationsSection from './components/ValidationsSection';
+import useService from '../../contexts/useService';
+import { updateServiceAPI } from '../../services/serviceApi';
 
-const Service = ({
-  service,
-  fieldBuilder,
-  transField,
-  transValidation,
-  changeService,
-  handleValidationToggle,
-  handleTransFieldChange,
-  removeTransField,
-  addTransField,
-  handleFieldBuilderChange,
-  removeFieldBuilder,
-  addFieldBuilder,
-}) => {
-  const handleSubmit = (e) => {
+const Service = () => {
+  const {
+    service,
+    transField,
+    fieldBuilder,
+    transValidation,
+    loading,
+    setLoading,
+    reset,
+  } = useService();
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
+
+    const payload = {
+      ...service,
+      validations: transValidation,
+      transFields: transField,
+      fieldBuilders: fieldBuilder,
+      definition: { glSteps: [] },
+    };
+
+    try {
+      setLoading(true);
+      await updateServiceAPI(payload);
+      reset();
+      console.log('Tạo dịch vụ thành công:', payload);
+    } catch (error) {
+      console.error('Tạo dịch vụ thất bại:', error);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -28,35 +46,13 @@ const Service = ({
       <Typography variant='h4' fontWeight={700} sx={{ mb: 3 }}>
         Chi tiết dịch vụ
       </Typography>
+
       <form onSubmit={handleSubmit}>
         <Grid container spacing={3}>
-          <BasicInfoSection
-            formData={{
-              ...service,
-              transFields: transField,
-              fieldBuilders: fieldBuilder,
-            }}
-            handleChange={changeService}
-          />
-
-          <ValidationsSection
-            selectedValidations={transValidation}
-            handleValidationToggle={handleValidationToggle}
-          />
-
-          <TransFieldsSection
-            transFields={transField}
-            handleTransFieldChange={handleTransFieldChange}
-            addTransField={addTransField}
-            removeTransField={removeTransField}
-          />
-
-          <FieldBuildersSection
-            fieldBuilders={fieldBuilder}
-            handleFieldBuilderChange={handleFieldBuilderChange}
-            addFieldBuilder={addFieldBuilder}
-            removeFieldBuilder={removeFieldBuilder}
-          />
+          <BasicInfoSection />
+          <ValidationsSection />
+          <TransFieldsSection />
+          <FieldBuildersSection />
 
           <Grid size={12}>
             <Stack
@@ -64,7 +60,9 @@ const Service = ({
               spacing={2}
               sx={{ justifyContent: 'flex-end' }}
             >
-              <Button variant='contained'>Cập nhật</Button>
+              <Button type='submit' variant='contained' disabled={loading}>
+                {loading ? 'Đang lưu...' : 'Cập nhật'}
+              </Button>
             </Stack>
           </Grid>
         </Grid>

@@ -10,7 +10,12 @@ module.exports = {
       required: true,
     },
 
-    fieldName: {
+    code: {
+      type: 'string',
+      required: true,
+    },
+
+    name: {
       type: 'string',
       required: true,
     },

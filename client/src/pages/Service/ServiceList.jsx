@@ -1,6 +1,4 @@
 import { useEffect, useState } from 'react';
-import useService from '../../hooks/useService';
-import { getAllServicesAPI } from '../../services/serviceApi';
 import {
   Box,
   Card,
@@ -11,62 +9,44 @@ import {
   Grid,
   Typography,
 } from '@mui/material';
+
+import { getAllServicesAPI } from '../../services/serviceApi';  
+
 import Service from './Service';
 
-const ServiceList = () => {
+import ServiceProvider from '../../contexts/ServiceProvider';
+import useService from '../../contexts/useService';
+
+const ServiceListContent = () => {
   const [list, setList] = useState([]);
-  const {
-    service,
-    fieldBuilder,
-    transField,
-    transValidation,
-    setService,
-    setFieldBuilder,
-    setTransField,
-    setTransValidation,
-    changeService,
-    handleValidationToggle,
-    handleTransFieldChange,
-    removeTransField,
-    addTransField,
-    handleFieldBuilderChange,
-    removeFieldBuilder,
-    addFieldBuilder,
-  } = useService();
+
+  const { service, loadService } = useService();
 
   useEffect(() => {
     const fetchServices = async () => {
-      const services = await getAllServicesAPI();
-      setList(services.services || []);
+      const result = await getAllServicesAPI();
+      setList(result.services || []);
     };
+
     fetchServices();
   }, []);
 
   if (list.length === 0) {
     return (
-      <Box sx={{ display: 'flex', mt: 5 }}>
+      <Box
+        sx={{
+          display: 'flex',
+          justifyContent: 'center',
+          mt: 5,
+        }}
+      >
         <CircularProgress />
       </Box>
     );
   }
 
-  if (service.name !== '') {
-    return (
-      <Service
-        service={service}
-        fieldBuilder={fieldBuilder}
-        transField={transField}
-        transValidation={transValidation}
-        changeService={changeService}
-        handleValidationToggle={handleValidationToggle}
-        handleTransFieldChange={handleTransFieldChange}
-        removeTransField={removeTransField}
-        addTransField={addTransField}
-        handleFieldBuilderChange={handleFieldBuilderChange}
-        removeFieldBuilder={removeFieldBuilder}
-        addFieldBuilder={addFieldBuilder}
-      />
-    );
+  if (service.name) {
+    return <Service />;
   }
 
   return (
@@ -74,10 +54,11 @@ const ServiceList = () => {
       <Typography variant='h4' fontWeight={700} sx={{ mb: 4 }}>
         Chọn dịch vụ
       </Typography>
+
       <Grid container spacing={3}>
-        {list.map((service) => (
+        {list.map((item) => (
           <Grid
-            key={service.code}
+            key={item.code}
             size={{
               xs: 12,
               sm: 6,
@@ -85,24 +66,17 @@ const ServiceList = () => {
             }}
           >
             <Card>
-              <CardActionArea
-                onClick={() => {
-                  setService(service);
-                  setFieldBuilder(service.fieldBuilders || []);
-                  setTransField(service.transFields || []);
-                  setTransValidation(service.validations || []);
-                }}
-              >
+              <CardActionArea onClick={() => loadService(item)}>
                 <CardContent>
-                  <Typography variant='h6'>{service.name}</Typography>
+                  <Typography variant='h6'>{item.name}</Typography>
 
                   <Typography color='text.secondary' sx={{ mt: 1 }}>
-                    {service.code}
+                    {item.code}
                   </Typography>
 
-                  {service.description && (
+                  {item.description && (
                     <Typography variant='body2' sx={{ mt: 2 }}>
-                      {service.description}
+                      {item.description}
                     </Typography>
                   )}
                 </CardContent>
@@ -115,4 +89,10 @@ const ServiceList = () => {
   );
 };
 
-export default ServiceList;
+export default function ServiceList() {
+  return (
+    <ServiceProvider>
+      <ServiceListContent />
+    </ServiceProvider>
+  );
+}

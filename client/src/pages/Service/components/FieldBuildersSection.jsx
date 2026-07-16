@@ -1,268 +1,48 @@
-import {
-  Box,
-  Button,
-  Card,
-  CardContent,
-  FormControl,
-  Grid,
-  IconButton,
-  InputLabel,
-  MenuItem,
-  Select,
-  Stack,
-  TextField,
-  Typography,
-} from '@mui/material';
+import { Button, Card, CardContent, Typography } from '@mui/material';
+import useService from '../../../contexts/useService';
+import FieldBuilderItem from './FieldBuilderItem';
 import AddIcon from '@mui/icons-material/Add';
-import DeleteIcon from '@mui/icons-material/Delete';
 
-const TransFieldsSection = ({
-  transFields,
-  handleTransFieldChange,
-  addTransField,
-  removeTransField,
-}) => {
+const FieldBuildersSection = () => {
+  const { fieldBuilder, setFieldBuilder, addFieldBuilder, removeFieldBuilder } =
+    useService();
+
+  const updateItem = (index, value) => {
+    setFieldBuilder((prev) => {
+      const next = [...prev];
+
+      next[index] = value;
+
+      return next;
+    });
+  };
+
   return (
-    <Grid sx={{ width: '100%' }} size={12}>
-      <Card>
-        <CardContent>
-          <Stack
-            direction='row'
-            sx={{
-              justifyContent: 'space-between',
-              alignItems: 'center',
-              mb: 2,
-            }}
-          >
-            <Typography variant='h6' fontWeight={600}>
-              Trường giao dịch (TransFields)
-            </Typography>
-          </Stack>
+    <Card>
+      <CardContent>
+        <Typography variant='h6' sx={{ mb: 2, fontWeight: 600 }}>
+          Field Builders
+        </Typography>
+        {fieldBuilder.map((field, index) => (
+          <FieldBuilderItem
+            key={field.id ?? index}
+            field={field}
+            index={index}
+            onChange={updateItem}
+            onRemove={removeFieldBuilder}
+          />
+        ))}
 
-          {transFields.map((field, index) => (
-            <Stack
-              direction='row'
-              key={index}
-              spacing={0}
-              sx={{ alignItems: 'center' }}
-            >
-              <Box
-                sx={{
-                  flex: 1,
-                  mb: 2,
-                  p: 2,
-                  border: '1px solid #e0e0e0',
-                  borderRadius: 1,
-                }}
-              >
-                <Grid container spacing={2} alignItems='center'>
-                  <Grid
-                    size={{
-                      xs: 12,
-                      md: 2,
-                    }}
-                  >
-                    <TextField
-                      fullWidth
-                      label='Thứ tự'
-                      type='number'
-                      value={field.order}
-                      onChange={(e) =>
-                        handleTransFieldChange(
-                          index,
-                          'order',
-                          Number(e.target.value)
-                        )
-                      }
-                      size='small'
-                    />
-                  </Grid>
-
-                  <Grid
-                    size={{
-                      xs: 12,
-                      md: 3,
-                    }}
-                  >
-                    <TextField
-                      fullWidth
-                      label='Tên trường'
-                      value={field.fieldName}
-                      onChange={(e) =>
-                        handleTransFieldChange(
-                          index,
-                          'fieldName',
-                          e.target.value
-                        )
-                      }
-                      size='small'
-                    />
-                  </Grid>
-
-                  <Grid
-                    size={{
-                      xs: 12,
-                      md: 2,
-                    }}
-                  >
-                    <FormControl fullWidth size='small'>
-                      <InputLabel>Kiểu dữ liệu</InputLabel>
-                      <Select
-                        value={field.dataType}
-                        label='Kiểu dữ liệu'
-                        onChange={(e) =>
-                          handleTransFieldChange(
-                            index,
-                            'dataType',
-                            e.target.value
-                          )
-                        }
-                      >
-                        <MenuItem value='string'>String</MenuItem>
-                        <MenuItem value='number'>Number</MenuItem>
-                        <MenuItem value='boolean'>Boolean</MenuItem>
-                        <MenuItem value='date'>Date</MenuItem>
-                      </Select>
-                    </FormControl>
-                  </Grid>
-
-                  <Grid
-                    size={{
-                      xs: 12,
-                      md: 2,
-                    }}
-                  >
-                    <FormControl fullWidth size='small'>
-                      <InputLabel>Bắt buộc</InputLabel>
-                      <Select
-                        value={field.isRequired}
-                        label='Bắt buộc'
-                        onChange={(e) =>
-                          handleTransFieldChange(
-                            index,
-                            'isRequired',
-                            e.target.value
-                          )
-                        }
-                      >
-                        <MenuItem value={true}>Có</MenuItem>
-                        <MenuItem value={false}>Không</MenuItem>
-                      </Select>
-                    </FormControl>
-                  </Grid>
-
-                  <Grid
-                    size={{
-                      xs: 12,
-                      md: 3,
-                    }}
-                  >
-                    <TextField
-                      fullWidth
-                      label='Độ dài tối thiểu'
-                      type='number'
-                      value={field.minLength}
-                      onChange={(e) =>
-                        handleTransFieldChange(
-                          index,
-                          'minLength',
-                          e.target.value === '' ? '' : Number(e.target.value)
-                        )
-                      }
-                      size='small'
-                    />
-                  </Grid>
-
-                  <Grid
-                    size={{
-                      xs: 12,
-                      md: 3,
-                    }}
-                  >
-                    <TextField
-                      fullWidth
-                      label='Độ dài tối đa'
-                      type='number'
-                      value={field.maxLength}
-                      onChange={(e) =>
-                        handleTransFieldChange(
-                          index,
-                          'maxLength',
-                          e.target.value === '' ? '' : Number(e.target.value)
-                        )
-                      }
-                      size='small'
-                    />
-                  </Grid>
-
-                  <Grid
-                    size={{
-                      xs: 12,
-                      md: 4,
-                    }}
-                  >
-                    <TextField
-                      fullWidth
-                      label='Regex pattern'
-                      value={field.regex}
-                      onChange={(e) =>
-                        handleTransFieldChange(index, 'regex', e.target.value)
-                      }
-                      size='small'
-                    />
-                  </Grid>
-
-                  <Grid
-                    size={{
-                      xs: 12,
-                      md: 2,
-                    }}
-                  >
-                    <TextField
-                      fullWidth
-                      label='Mã lỗi'
-                      value={field.errorCode}
-                      onChange={(e) =>
-                        handleTransFieldChange(
-                          index,
-                          'errorCode',
-                          e.target.value
-                        )
-                      }
-                      size='small'
-                    />
-                  </Grid>
-                </Grid>
-              </Box>
-
-              <Box
-                sx={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  pb: 2,
-                }}
-              >
-                <IconButton
-                  color='error'
-                  onClick={() => removeTransField(index)}
-                >
-                  <DeleteIcon />
-                </IconButton>
-              </Box>
-            </Stack>
-          ))}
-
-          <Button
-            startIcon={<AddIcon />}
-            onClick={addTransField}
-            variant='outlined'
-          >
-            Thêm TransField
-          </Button>
-        </CardContent>
-      </Card>
-    </Grid>
+        <Button
+          startIcon={<AddIcon />}
+          variant='outlined'
+          onClick={addFieldBuilder}
+        >
+          Thêm Field Builder
+        </Button>
+      </CardContent>
+    </Card>
   );
 };
 
-export default TransFieldsSection;
+export default FieldBuildersSection;

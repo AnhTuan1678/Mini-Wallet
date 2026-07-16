@@ -1,84 +1,12 @@
 import { useState } from 'react';
-
-export const PREDEFINED_VALIDATIONS = [
-  {
-    id: 'verifyPIN',
-    name: 'Xác thực PIN',
-    func: 'verifyPINAsync',
-    fields: 'pin',
-  },
-  {
-    id: 'validateBalance',
-    name: 'Kiểm tra số dư',
-    func: 'validateBalance',
-    fields: 'amount',
-  },
-  {
-    id: 'validateAmount',
-    name: 'Kiểm tra số tiền',
-    func: 'validateAmount',
-    fields: 'amount',
-  },
-  {
-    id: 'validateReceiver',
-    name: 'Kiểm tra người nhận',
-    func: 'validateReceiver',
-    fields: 'receiver',
-  },
-  {
-    id: 'validateDailyLimit',
-    name: 'Kiểm tra giới hạn ngày',
-    func: 'validateDailyLimit',
-    fields: 'amount',
-  },
-  {
-    id: 'validateMonthlyLimit',
-    name: 'Kiểm tra giới hạn tháng',
-    func: 'validateMonthlyLimit',
-    fields: 'amount',
-  },
-];
-
-const initialService = {
-  code: '',
-  name: '',
-  authMethod: 'none',
-  feeType: 'fixed',
-  feeValue: 0,
-  feeMax: Number.MAX_SAFE_INTEGER,
-  feeMin: 0,
-  status: true,
-};
-
-const initialTransField = {
-  order: 1,
-  fieldName: '',
-  dataType: 'string',
-  isRequired: true,
-  minLength: '',
-  maxLength: '',
-  regex: '',
-  errorCode: '',
-};
-
-const initialFieldBuilder = {
-  order: 1,
-  code: '',
-  name: '',
-  dataType: 'string',
-  rule: 'fixed',
-  isRequired: true,
-  value: '',
-  source: 'body',
-  sourceField: '',
-  query: '',
-  queryField: '',
-  column: '',
-  error: '',
-};
+import {
+  INITIAL_FIELD_BUILDER,
+  INITIAL_SERVICE,
+  INITIAL_TRANS_FIELD,
+} from '../constants/serviceDefaults';
 
 export default function useService() {
-  const [service, setService] = useState(initialService);
+  const [service, setService] = useState(INITIAL_SERVICE);
   const [loading, setLoading] = useState(false);
   const [transField, setTransField] = useState([]);
   const [fieldBuilder, setFieldBuilder] = useState([]);
@@ -91,14 +19,14 @@ export default function useService() {
   const addTransField = () => {
     setTransField([
       ...transField,
-      { ...initialTransField, order: transField.length + 1 },
+      { ...INITIAL_TRANS_FIELD, order: transField.length + 1 },
     ]);
   };
 
   const addFieldBuilder = () => {
     setFieldBuilder([
       ...fieldBuilder,
-      { ...initialFieldBuilder, order: fieldBuilder.length + 1 },
+      { ...INITIAL_FIELD_BUILDER, order: fieldBuilder.length + 1 },
     ]);
   };
 
@@ -150,8 +78,10 @@ export default function useService() {
   const removeTransField = (index) => {
     setTransField(transField.filter((_, i) => i !== index));
   };
+  console.log(service, fieldBuilder, transField, transValidation);
 
   const handleFieldBuilderChange = (index, field, value) => {
+    console.log('handleFieldBuilderChange', index, field, value);
     setFieldBuilder((prev) => {
       const newFieldBuilders = [...prev];
       newFieldBuilders[index] = { ...newFieldBuilders[index], [field]: value };

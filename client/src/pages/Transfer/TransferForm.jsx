@@ -61,10 +61,10 @@ const TransferForm = ({ service }) => {
 
           {activeStep === 0 && (
             <Box component='form' onSubmit={handleRequestSubmit}>
-              {service?.fieldBuilders && service.fieldBuilders.length > 0 && (
-                service.fieldBuilders.map((field) => (
+              {service?.transFields && service.transFields.length > 0 && (
+                service.transFields.map((field) => (
                   <TextField
-                    key={field.code}
+                    key={field.id}
                     fullWidth
                     label={field.name}
                     name={field.code}
@@ -76,36 +76,6 @@ const TransferForm = ({ service }) => {
                   />
                 ))
               )}
-              {/* <TextField
-                fullWidth
-                label='Số điện thoại người nhận'
-                name='phone'
-                value={requestData.phone}
-                onChange={handleRequestChange}
-                margin='normal'
-                required
-              />
-
-              <TextField
-                fullWidth
-                label='Mã dịch vụ'
-                name='serverCode'
-                value={requestData.serverCode}
-                onChange={handleRequestChange}
-                margin='normal'
-                required
-              />
-
-              <TextField
-                fullWidth
-                label='Số tiền'
-                name='amount'
-                type='number'
-                value={requestData.amount}
-                onChange={handleRequestChange}
-                margin='normal'
-                required
-              /> */}
 
               <Button
                 fullWidth

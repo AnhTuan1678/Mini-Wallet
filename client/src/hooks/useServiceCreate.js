@@ -1,90 +1,13 @@
 import { useState } from 'react';
 import { createServiceAPI } from '../services/serviceApi';
-
-// Predefined validation rules
-export const PREDEFINED_VALIDATIONS = [
-  {
-    id: 'verifyPIN',
-    name: 'Xác thực PIN',
-    func: 'verifyPINAsync',
-    fields: 'pin',
-  },
-  {
-    id: 'validateBalance',
-    name: 'Kiểm tra số dư',
-    func: 'validateBalance',
-    fields: 'amount',
-  },
-  {
-    id: 'validateAmount',
-    name: 'Kiểm tra số tiền',
-    func: 'validateAmount',
-    fields: 'amount',
-  },
-  {
-    id: 'validateReceiver',
-    name: 'Kiểm tra người nhận',
-    func: 'validateReceiver',
-    fields: 'receiver',
-  },
-  {
-    id: 'validateDailyLimit',
-    name: 'Kiểm tra giới hạn ngày',
-    func: 'validateDailyLimit',
-    fields: 'amount',
-  },
-  {
-    id: 'validateMonthlyLimit',
-    name: 'Kiểm tra giới hạn tháng',
-    func: 'validateMonthlyLimit',
-    fields: 'amount',
-  },
-];
-
-const initialFormData = {
-  code: '',
-  name: '',
-  authMethod: 'pin',
-  feeType: 'fixed',
-  feeValue: 0,
-  feeMax: Number.MAX_SAFE_INTEGER,
-  feeMin: 0,
-  status: true,
-  validations: [],
-  transFields: [],
-  fieldBuilders: [],
-  definition: { glSteps: [] },
-};
-
-const initialTransField = {
-  order: 1,
-  fieldName: '',
-  dataType: 'string',
-  isRequired: true,
-  minLength: '',
-  maxLength: '',
-  regex: '',
-  errorCode: '',
-};
-
-const initialFieldBuilder = {
-  order: 1,
-  code: '',
-  name: '',
-  dataType: 'string',
-  rule: 'fixed',
-  isRequired: true,
-  value: '',
-  source: 'body',
-  sourceField: '',
-  query: '',
-  queryFields: '',
-  columns: '',
-  error: '',
-};
+import {
+  INITIAL_SERVICE_CREATE_FORM,
+  INITIAL_SERVICE_CREATE_FIELD_BUILDER,
+  INITIAL_TRANS_FIELD,
+} from '../constants/serviceDefaults';
 
 const useServiceCreate = () => {
-  const [formData, setFormData] = useState(initialFormData);
+  const [formData, setFormData] = useState(INITIAL_SERVICE_CREATE_FORM);
   const [selectedValidations, setSelectedValidations] = useState([]);
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(false);
@@ -141,7 +64,7 @@ const useServiceCreate = () => {
       transFields: [
         ...prev.transFields,
         {
-          ...initialTransField,
+          ...INITIAL_TRANS_FIELD,
           order: prev.transFields.length + 1,
         },
       ],
@@ -169,7 +92,7 @@ const useServiceCreate = () => {
       fieldBuilders: [
         ...prev.fieldBuilders,
         {
-          ...initialFieldBuilder,
+          ...INITIAL_SERVICE_CREATE_FIELD_BUILDER,
           order: prev.fieldBuilders.length + 1,
         },
       ],
@@ -192,7 +115,7 @@ const useServiceCreate = () => {
       await createServiceAPI(formData);
       setSuccess(true);
       // Reset form
-      setFormData(initialFormData);
+      setFormData(INITIAL_SERVICE_CREATE_FORM);
       setSelectedValidations([]);
     } catch (err) {
       setError(err.message);
@@ -200,7 +123,7 @@ const useServiceCreate = () => {
   };
 
   const resetForm = () => {
-    setFormData(initialFormData);
+    setFormData(INITIAL_SERVICE_CREATE_FORM);
     setSelectedValidations([]);
     setError(null);
     setSuccess(false);

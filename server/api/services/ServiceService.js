@@ -133,9 +133,9 @@ const validateServiceConfig = (serviceData) => {
           );
         }
 
-        if (!field.fieldName || typeof field.fieldName !== 'string') {
+        if (!field.code || typeof field.code !== 'string') {
           errors.push(
-            `transFields[${index}].fieldName is required and must be a string`
+            `transFields[${index}].code is required and must be a string`
           );
         }
 
@@ -316,5 +316,89 @@ module.exports = {
       .populate('definition');
 
     return createdService;
+  },
+
+  async update(serviceData) {
+    const validationErrors = validateServiceConfig(serviceData);
+
+    if (validationErrors.length > 0) {
+      const error = new Error('Service configuration validation failed');
+      error.validationErrors = validationErrors;
+      throw error;
+    }
+
+    if (!serviceData.id) {
+      throw new Error('Service id is required');
+    }
+
+    const existingService = await Service.findOne({ id: serviceData.id });
+
+    if (!existingService) {
+      throw new Error('Service not found');
+    }
+
+    const {
+      id,
+      validations,
+      transFields,
+      fieldBuilders,
+      definition,
+      ...serviceFields
+    } = serviceData;
+
+    await Service.updateOne({ id }).set(serviceFields);
+
+    await TransValidation.destroy({ service: id });
+    await TransField.destroy({ service: id });
+    await FieldBuilder.destroy({ service: id });
+    await TransDefinition.destroy({ service: id });
+
+    if (validations && validations.length > 0) {
+      await Promise.all(
+        validations.map((validation) =>
+          TransValidation.create({
+            ...validation,
+            service: id,
+          })
+        )
+      );
+    }
+
+    if (transFields && transFields.length > 0) {
+      await Promise.all(
+        transFields.map((field) =>
+          TransField.create({
+            ...field,
+            service: id,
+          })
+        )
+      );
+    }
+
+    if (fieldBuilders && fieldBuilders.length > 0) {
+      await Promise.all(
+        fieldBuilders.map((builder) =>
+          FieldBuilder.create({
+            ...builder,
+            service: id,
+          })
+        )
+      );
+    }
+
+    if (definition) {
+      await TransDefinition.create({
+        ...definition,
+        service: id,
+      });
+    }
+
+    const updatedService = await Service.findOne({ id })
+      .populate('validations')
+      .populate('transFields')
+      .populate('fieldBuilders')
+      .populate('definition');
+
+    return updatedService;
   },
 };

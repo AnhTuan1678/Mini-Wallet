@@ -49,5 +49,10 @@ module.exports = {
     expiredAt: {
       type: 'number',
     },
+
+    pinAttempts: {
+      type: 'number',
+      defaultsTo: 0,
+    },
   },
 };

@@ -33,4 +33,5 @@ module.exports.routes = {
   'POST /api/service/get-by-code': 'ServiceController.getByCode',
   'POST /api/service/get-all': 'ServiceController.getAll',
   'POST /api/service/create': 'ServiceController.create',
+  'PUT /api/service/update': 'ServiceController.update',
 };

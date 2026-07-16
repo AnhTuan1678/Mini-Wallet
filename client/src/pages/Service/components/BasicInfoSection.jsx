@@ -9,56 +9,76 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
+import useService from '../../../contexts/useService';
 
-const BasicInfoSection = ({ formData, handleChange }) => {
+const BasicInfoSection = () => {
+  const { service, changeService } = useService();
+
   return (
     <Grid size={12}>
       <Card>
         <CardContent>
-          <Typography variant='h6' fontWeight={600} sx={{ mb: 2 }}>
+          <Typography variant='h6' sx={{ mb: 2, fontWeight: 600 }}>
             Thông Tin Cơ Bản
           </Typography>
-          <Grid container spacing={2}>
+
+          <Grid container spacing={0.5}>
             <Grid
               size={{
                 xs: 12,
-                md: 6,
+                md: 5,
               }}
             >
               <TextField
                 fullWidth
                 label='Mã'
-                value={formData.code}
-                onChange={(e) => handleChange('code', e.target.value)}
+                value={service.code}
+                onChange={(e) => changeService('code', e.target.value)}
                 required
               />
             </Grid>
+
             <Grid
               size={{
                 xs: 12,
-                md: 6,
+                md: 5,
               }}
             >
               <TextField
                 fullWidth
                 label='Tên'
-                value={formData.name}
-                onChange={(e) => handleChange('name', e.target.value)}
+                value={service.name}
+                onChange={(e) => changeService('name', e.target.value)}
                 required
               />
             </Grid>
+
+            <Grid size={2}>
+              <FormControl fullWidth>
+                <InputLabel>Trạng thái</InputLabel>
+                <Select
+                  value={service.status}
+                  label='Trạng thái'
+                  onChange={(e) => changeService('status', e.target.value)}
+                >
+                  <MenuItem value={true}>Hoạt động</MenuItem>
+                  <MenuItem value={false}>Không hoạt động</MenuItem>
+                </Select>
+              </FormControl>
+            </Grid>
+
             <Grid
               size={{
                 xs: 12,
-                md: 4,
+                md: 1.5,
               }}
             >
               <FormControl fullWidth>
                 <InputLabel>Xác thực</InputLabel>
                 <Select
-                  value={formData.authMethod}
-                  onChange={(e) => handleChange('authMethod', e.target.value)}
+                  value={service.authMethod}
                   label='Xác thực'
+                  onChange={(e) => changeService('authMethod', e.target.value)}
                 >
                   <MenuItem value='pin'>PIN</MenuItem>
                   <MenuItem value='none'>Không</MenuItem>
@@ -66,80 +86,75 @@ const BasicInfoSection = ({ formData, handleChange }) => {
                 </Select>
               </FormControl>
             </Grid>
+
             <Grid
               size={{
                 xs: 12,
-                md: 4,
+                md: 1.5,
               }}
             >
               <FormControl fullWidth>
                 <InputLabel>Loại phí</InputLabel>
                 <Select
-                  value={formData.feeType}
-                  onChange={(e) => handleChange('feeType', e.target.value)}
+                  value={service.feeType}
                   label='Loại phí'
+                  onChange={(e) => changeService('feeType', e.target.value)}
                 >
                   <MenuItem value='fixed'>Cố định</MenuItem>
                   <MenuItem value='percent'>Phần trăm</MenuItem>
                 </Select>
               </FormControl>
             </Grid>
+
             <Grid
               size={{
                 xs: 12,
-                md: 4,
+                md: 1.5,
               }}
             >
               <TextField
                 fullWidth
                 label='Giá trị phí'
                 type='number'
-                value={formData.feeValue}
+                value={service.feeValue}
                 onChange={(e) =>
-                  handleChange('feeValue', Number(e.target.value))
+                  changeService('feeValue', Number(e.target.value))
                 }
               />
             </Grid>
+
             <Grid
               size={{
                 xs: 12,
-                md: 6,
+                md: 1.5,
               }}
             >
               <TextField
                 fullWidth
                 label='Phí tối thiểu'
                 type='number'
-                value={formData.feeMin}
-                onChange={(e) => handleChange('feeMin', Number(e.target.value))}
+                value={service.feeMin}
+                onChange={(e) =>
+                  changeService('feeMin', Number(e.target.value))
+                }
               />
             </Grid>
+
             <Grid
               size={{
                 xs: 12,
-                md: 6,
+                md: 2,
               }}
             >
               <TextField
                 fullWidth
                 label='Phí tối đa'
                 type='number'
-                value={formData.feeMax}
-                onChange={(e) => handleChange('feeMax', Number(e.target.value))}
+                value={service.feeMax}
+                onChange={(e) =>
+                  changeService('feeMax', Number(e.target.value))
+                }
               />
-            </Grid>
-            <Grid size={12}>
-              <FormControl fullWidth>
-                <InputLabel>Trạng thái</InputLabel>
-                <Select
-                  value={formData.status}
-                  onChange={(e) => handleChange('status', e.target.value)}
-                  label='Trạng thái'
-                >
-                  <MenuItem value={true}>Hoạt động</MenuItem>
-                  <MenuItem value={false}>Không hoạt động</MenuItem>
-                </Select>
-              </FormControl>
             </Grid>
           </Grid>
         </CardContent>

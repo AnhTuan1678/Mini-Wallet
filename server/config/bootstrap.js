@@ -234,17 +234,19 @@ module.exports.bootstrap = async function (done) {
   await TransField.createEach([
     {
       service: service.id,
-      order: 2,
-      fieldName: 'receiverPhone',
+      order: 1,
+      code: 'receiverPhone',
+      name: 'Số điện thoại người nhận',
       dataType: 'string',
-      regex: '^\\d{8,15}$',
+      regex: sails.config.custom.phoneNumberRegex,
       isRequired: true,
     },
 
     {
       service: service.id,
-      order: 3,
-      fieldName: 'amount',
+      order: 2,
+      code: 'amount',
+      name: 'Số tiền',
       dataType: 'number',
       isRequired: true,
     },
