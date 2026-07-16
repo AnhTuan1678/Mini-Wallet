@@ -1,6 +1,8 @@
 export const INITIAL_SERVICE = {
   code: '',
   name: '',
+  type: 'transfer',
+  action: 'none',
   authMethod: 'none',
   feeType: 'fixed',
   feeValue: 0,
@@ -56,6 +58,8 @@ export const INITIAL_SERVICE_CREATE_FIELD_BUILDER = {
 export const INITIAL_SERVICE_CREATE_FORM = {
   code: '',
   name: '',
+  type: 'transfer',
+  action: 'none',
   authMethod: 'pin',
   feeType: 'fixed',
   feeValue: 0,

@@ -37,6 +37,24 @@ const validateServiceConfig = (serviceData) => {
   }
 
   if (
+    serviceData.type &&
+    !['transfer', 'cash-in', 'bill-payment', 'service'].includes(
+      serviceData.type
+    )
+  ) {
+    errors.push(
+      'type must be one of: transfer, cash-in, bill-payment, service'
+    );
+  }
+
+  if (
+    serviceData.action &&
+    !['none', 'billerTrans'].includes(serviceData.action)
+  ) {
+    errors.push('action must be one of: none, billerTrans');
+  }
+
+  if (
     serviceData.feeType &&
     !['fixed', 'percent'].includes(serviceData.feeType)
   ) {

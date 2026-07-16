@@ -13,9 +13,8 @@ export default function Transfer() {
       try {
         const data = await getAllServicesAPI();
         const allServices = data.services || data.data || data;
-        // Filter out cash-in services - only admin can use cash-in
         const transferServices = allServices.filter(
-          (s) => s.type !== 'cash-in'
+          (s) => s?.type === 'transfer'
         );
         setServices(transferServices);
       } catch (err) {

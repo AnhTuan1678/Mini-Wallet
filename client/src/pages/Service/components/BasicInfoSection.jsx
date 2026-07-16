@@ -76,6 +76,46 @@ const BasicInfoSection = ({ formData, handleChange }) => {
             <Grid
               size={{
                 xs: 12,
+                md: 2,
+              }}
+            >
+              <FormControl fullWidth>
+                <InputLabel>Loại dịch vụ</InputLabel>
+                <Select
+                  value={service.type}
+                  label='Loại dịch vụ'
+                  onChange={(e) => changeService('type', e.target.value)}
+                >
+                  <MenuItem value='transfer'>Transfer</MenuItem>
+                  <MenuItem value='cash-in'>Cash-in</MenuItem>
+                  <MenuItem value='bill-payment'>Bill payment</MenuItem>
+                  <MenuItem value='service'>Service</MenuItem>
+                </Select>
+              </FormControl>
+            </Grid>
+
+            <Grid
+              size={{
+                xs: 12,
+                md: 2,
+              }}
+            >
+              <FormControl fullWidth>
+                <InputLabel>Hành vi biller</InputLabel>
+                <Select
+                  value={service.action}
+                  label='Hành vi biller'
+                  onChange={(e) => changeService('action', e.target.value)}
+                >
+                  <MenuItem value='none'>Không</MenuItem>
+                  <MenuItem value='billerTrans'>Biller transaction</MenuItem>
+                </Select>
+              </FormControl>
+            </Grid>
+
+            <Grid
+              size={{
+                xs: 12,
                 md: 1.5,
               }}
             >
