@@ -89,7 +89,6 @@ const WalletList = () => {
       try {
         setLoading(true);
         const data = await getAllWalletsAPI(token);
-        console.log('Wallets data:', data);
         setWallets(Array.isArray(data) ? data : []);
       } catch (err) {
         console.error('Fetch wallets error:', err);
@@ -111,7 +110,6 @@ const WalletList = () => {
       setError('');
 
       const data = await getWalletTransactionsAPI(token, wallet.id);
-      console.log('Wallet transactions:', data);
       setTransactions(Array.isArray(data) ? data : []);
     } catch (err) {
       console.error('Fetch transactions error:', err);
@@ -129,7 +127,7 @@ const WalletList = () => {
 
   if (loading) {
     return (
-      <Box display='flex' justifyContent='center' py={8}>
+      <Box display='flex' py={8} sx={{ justifyContent: 'center' }}>
         <CircularProgress />
       </Box>
     );

@@ -28,7 +28,7 @@ const FilterPanel = ({
         </Typography>
 
         <Grid container spacing={2}>
-          <Grid item xs={12} sm={6} md={3}>
+          <Grid size={{ xs: 12, sm: 6, md: 3 }}>
             <FormControl fullWidth size='small'>
               <InputLabel>Trạng thái</InputLabel>
               <Select
@@ -46,7 +46,7 @@ const FilterPanel = ({
             </FormControl>
           </Grid>
 
-          <Grid item xs={12} sm={6} md={3}>
+          <Grid size={{ xs: 12, sm: 6, md: 3 }}>
             <TextField
               fullWidth
               size='small'
@@ -59,7 +59,7 @@ const FilterPanel = ({
             />
           </Grid>
 
-          <Grid item xs={12} sm={6} md={2}>
+          <Grid size={{ xs: 12, sm: 6, md: 2 }}>
             <TextField
               fullWidth
               size='small'
@@ -72,7 +72,7 @@ const FilterPanel = ({
             />
           </Grid>
 
-          <Grid item xs={12} sm={6} md={2}>
+          <Grid size={{ xs: 12, sm: 6, md: 2 }}>
             <TextField
               fullWidth
               size='small'
@@ -85,7 +85,7 @@ const FilterPanel = ({
             />
           </Grid>
 
-          <Grid item xs={12} sm={6} md={2}>
+          <Grid size={{ xs: 12, sm: 6, md: 2 }}>
             <FormControl fullWidth size='small'>
               <InputLabel>Sắp xếp theo</InputLabel>
               <Select
@@ -100,7 +100,7 @@ const FilterPanel = ({
             </FormControl>
           </Grid>
 
-          <Grid item xs={12} sm={6} md={2}>
+          <Grid size={{ xs: 12, sm: 6, md: 2 }}>
             <FormControl fullWidth size='small'>
               <InputLabel>Thứ tự</InputLabel>
               <Select
@@ -114,13 +114,17 @@ const FilterPanel = ({
             </FormControl>
           </Grid>
 
-          <Grid item xs={12} sm={6} md={3}>
+          <Grid size={{ xs: 12, sm: 6, md: 3 }}>
             <TextField
               fullWidth
               size='small'
               label='Từ ngày'
               type='date'
-              InputLabelProps={{ shrink: true }}
+              slotProps={{
+                inputLabel: {
+                  shrink: true,
+                },
+              }}
               value={filters.startDate}
               onChange={(e) =>
                 setFilters({ ...filters, startDate: e.target.value })
@@ -128,13 +132,17 @@ const FilterPanel = ({
             />
           </Grid>
 
-          <Grid item xs={12} sm={6} md={3}>
+          <Grid size={{ xs: 12, sm: 6, md: 3 }}>
             <TextField
               fullWidth
               size='small'
               label='Đến ngày'
               type='date'
-              InputLabelProps={{ shrink: true }}
+              slotProps={{
+                inputLabel: {
+                  shrink: true,
+                },
+              }}
               value={filters.endDate}
               onChange={(e) =>
                 setFilters({ ...filters, endDate: e.target.value })
@@ -142,12 +150,8 @@ const FilterPanel = ({
             />
           </Grid>
 
-          <Grid item xs={12} sm={6} md={2}>
-            <Button
-              fullWidth
-              variant='outlined'
-              onClick={resetFilters}
-            >
+          <Grid size={{ xs: 12, sm: 6, md: 2 }}>
+            <Button fullWidth variant='outlined' onClick={resetFilters}>
               Đặt lại
             </Button>
           </Grid>

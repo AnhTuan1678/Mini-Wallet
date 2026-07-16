@@ -11,6 +11,7 @@ import ServiceCreate from '../pages/Service/ServiceCreate';
 import UserManagement from '../pages/UserManagement/UserManagement';
 import CashInIndex from '../pages/CashIn/CashInIndex';
 import CashIn from '../pages/CashIn/CashIn';
+import ServiceList from '../pages/Service/ServiceList';
 
 const router = createBrowserRouter([
   {
@@ -64,6 +65,10 @@ const router = createBrowserRouter([
       {
         path: 'cash-in/:serviceCode',
         element: <CashIn />,
+      },
+      {
+        path: 'services',
+        element: <ServiceList />,
       },
     ],
   },

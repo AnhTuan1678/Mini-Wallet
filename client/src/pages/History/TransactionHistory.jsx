@@ -28,7 +28,7 @@ const TransactionHistory = () => {
 
   if (loading) {
     return (
-      <Box display='flex' justifyContent='center' py={8}>
+      <Box display='flex' py={8} sx={{ justifyContent: 'center' }}>
         <CircularProgress />
       </Box>
     );

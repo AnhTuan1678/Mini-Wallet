@@ -7,19 +7,18 @@ import {
   Grid,
   Typography,
 } from '@mui/material';
-import { PREDEFINED_VALIDATIONS } from '../../../hooks/useServiceCreate';
+import { PREDEFINED_VALIDATIONS } from '../../../constants/PREDEFINED_VALIDATIONS';
 
 const ValidationsSection = ({
   selectedValidations,
-  formData,
   handleValidationToggle,
 }) => {
   return (
-    <Grid item xs={12}>
+    <Grid item xs={12} sx={{ width: '100%' }}>
       <Card>
         <CardContent>
           <Typography variant='h6' fontWeight={600} mb={2}>
-            Quy tắc xác thực (Validations)
+            Validations
           </Typography>
           <Grid container spacing={2}>
             {PREDEFINED_VALIDATIONS.map((rule) => (
@@ -27,21 +26,23 @@ const ValidationsSection = ({
                 <FormControlLabel
                   control={
                     <Checkbox
-                      checked={selectedValidations.includes(rule.id)}
+                      checked={selectedValidations.some(
+                        (v) => v.validateFunc === rule.validateFunc
+                      )}
                       onChange={() => handleValidationToggle(rule)}
                     />
                   }
-                  label={rule.name}
+                  label={rule.description}
                 />
               </Grid>
             ))}
           </Grid>
-          {formData.validations.length > 0 && (
+          {selectedValidations.length > 0 && (
             <Box sx={{ mt: 2, p: 2, bgcolor: 'grey.50', borderRadius: 1 }}>
               <Typography variant='subtitle2' color='text.secondary' mb={1}>
-                Đã chọn ({formData.validations.length}):
+                Đã chọn ({selectedValidations.length}):
               </Typography>
-              {formData.validations.map((validation, index) => (
+              {selectedValidations.map((validation, index) => (
                 <Typography key={index} variant='body2' sx={{ ml: 2 }}>
                   {index + 1}. {validation.validateFunc} -{' '}
                   {validation.validateFields}

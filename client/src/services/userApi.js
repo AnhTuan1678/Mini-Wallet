@@ -11,8 +11,6 @@ export const getAllUsersAPI = async (token) => {
 
   const data = await response.json();
 
-  console.log('Raw API response:', data);
-
   if (!response.ok || (data.error && data.error !== 200)) {
     console.error('Get all users failed:', data);
     throw new Error(data.message || 'Không thể tải danh sách người dùng');

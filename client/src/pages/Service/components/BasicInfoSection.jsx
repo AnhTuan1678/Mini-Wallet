@@ -22,7 +22,7 @@ const BasicInfoSection = ({ formData, handleChange }) => {
             <Grid item xs={12} md={6}>
               <TextField
                 fullWidth
-                label='Mã dịch vụ (code)'
+                label='Mã'
                 value={formData.code}
                 onChange={(e) => handleChange('code', e.target.value)}
                 required
@@ -31,7 +31,7 @@ const BasicInfoSection = ({ formData, handleChange }) => {
             <Grid item xs={12} md={6}>
               <TextField
                 fullWidth
-                label='Tên dịch vụ'
+                label='Tên'
                 value={formData.name}
                 onChange={(e) => handleChange('name', e.target.value)}
                 required
@@ -39,11 +39,11 @@ const BasicInfoSection = ({ formData, handleChange }) => {
             </Grid>
             <Grid item xs={12} md={4}>
               <FormControl fullWidth>
-                <InputLabel>Phương thức xác thực</InputLabel>
+                <InputLabel>Xác thực</InputLabel>
                 <Select
                   value={formData.authMethod}
                   onChange={(e) => handleChange('authMethod', e.target.value)}
-                  label='Phương thức xác thực'
+                  label='Xác thực'
                 >
                   <MenuItem value='pin'>PIN</MenuItem>
                   <MenuItem value='none'>Không</MenuItem>

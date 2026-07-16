@@ -50,22 +50,22 @@ module.exports = {
     },
 
     fieldBuilders: {
-      collection: 'fieldBuilder',
+      collection: 'fieldbuilder',
       via: 'service',
     },
 
     transFields: {
-      collection: 'transField',
+      collection: 'transfield',
       via: 'service',
     },
 
     validations: {
-      collection: 'transValidation',
+      collection: 'transvalidation',
       via: 'service',
     },
 
     definition: {
-      model: 'transDefinition',
+      model: 'transdefinition',
     },
   },
 };

@@ -1,4 +1,5 @@
 const filterRequiredFields = (service) => ({
+  id: service.id,
   code: service.code,
   name: service.name,
   authMethod: service.authMethod,
@@ -12,6 +13,9 @@ const filterRequiredFields = (service) => ({
       dataType: field.dataType,
       code: field.code,
     })),
+  transFields: service.transFields,
+  validations: service.validations,
+  transValidations: service.transValidations,
 });
 
 const validateServiceConfig = (serviceData) => {
@@ -217,13 +221,18 @@ module.exports = {
       throw new Error('Service not found');
     }
 
-    return filterRequiredFields(service);
+    // return filterRequiredFields(service);
+    return service;
   },
 
   async getAll() {
-    const services = await Service.find().populate('fieldBuilders');
+    const services = await Service.find()
+      .populate('fieldBuilders')
+      .populate('transFields')
+      .populate('validations');
 
-    return services.map(filterRequiredFields);
+    // return services.map(filterRequiredFields);
+    return services;
   },
 
   async create(serviceData) {

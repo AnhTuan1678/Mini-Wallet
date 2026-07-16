@@ -234,14 +234,6 @@ module.exports.bootstrap = async function (done) {
   await TransField.createEach([
     {
       service: service.id,
-      order: 1,
-      fieldName: 'userId',
-      dataType: 'string',
-      isRequired: true,
-    },
-
-    {
-      service: service.id,
       order: 2,
       fieldName: 'receiverPhone',
       dataType: 'string',
@@ -254,30 +246,6 @@ module.exports.bootstrap = async function (done) {
       order: 3,
       fieldName: 'amount',
       dataType: 'number',
-      isRequired: true,
-    },
-
-    {
-      service: service.id,
-      order: 4,
-      fieldName: 'currency',
-      dataType: 'string',
-      isRequired: true,
-    },
-
-    {
-      service: service.id,
-      order: 5,
-      fieldName: 'senderId',
-      dataType: 'string',
-      isRequired: true,
-    },
-
-    {
-      service: service.id,
-      order: 6,
-      fieldName: 'receiverId',
-      dataType: 'string',
       isRequired: true,
     },
   ]);

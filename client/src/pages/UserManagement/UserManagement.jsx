@@ -76,7 +76,6 @@ const UserManagement = () => {
       try {
         setLoading(true);
         const data = await getAllUsersAPI(token);
-        console.log('Users data:', data);
         setUsers(Array.isArray(data) ? data : []);
       } catch (err) {
         console.error('Fetch users error:', err);
@@ -123,7 +122,13 @@ const UserManagement = () => {
 
   if (loading) {
     return (
-      <Box display='flex' justifyContent='center' py={8}>
+      <Box
+        sx={{
+          display: 'flex',
+          justifyContent: 'center',
+          py: 8,
+        }}
+      >
         <CircularProgress />
       </Box>
     );
