@@ -68,6 +68,11 @@ const menuAdminItems = [
     path: '/admin/services',
   },
   {
+    text: 'Biller',
+    icon: <ReceiptLongRounded />,
+    path: '/admin/billers',
+  },
+  {
     text: 'Hóa đơn',
     icon: <ReceiptLongRounded />,
     path: '/admin/bills',

@@ -42,6 +42,7 @@ export default function ServiceProvider({ children, initialState = null }) {
 
   const reset = () => {
     setService(INITIAL_SERVICE);
+    console.log('reset service', INITIAL_SERVICE);
     setFieldBuilder([]);
     setTransField([]);
     setTransValidation([]);

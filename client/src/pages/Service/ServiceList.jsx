@@ -46,20 +46,10 @@ const ServiceListContent = () => {
       </Box>
     );
   }
+  console.log('service', service);
 
   if (service.name) {
-    return (
-      <ServiceProvider
-        initialState={{
-          service,
-          transField: service.transFields || [],
-          fieldBuilder: service.fieldBuilders || [],
-          transValidation: service.validations || [],
-        }}
-      >
-        <Service />
-      </ServiceProvider>
-    );
+    return <Service />;
   }
 
   return (

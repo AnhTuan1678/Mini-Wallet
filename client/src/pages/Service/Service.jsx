@@ -1,4 +1,5 @@
 import {
+  Alert,
   Button,
   Container,
   Grid,
@@ -15,6 +16,7 @@ import useService from '../../contexts/useService';
 import { updateServiceAPI, createServiceAPI } from '../../services/serviceApi';
 import useAuth from '../../contexts/useAuth';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import { useState } from 'react';
 
 const Service = ({ mode = 'edit' }) => {
   const {
@@ -26,6 +28,8 @@ const Service = ({ mode = 'edit' }) => {
     setLoading,
     reset,
   } = useService();
+  const [message, setMessage] = useState('');
+  const [error, setError] = useState('');
   const { token } = useAuth();
 
   const handleSubmit = async (e) => {
@@ -39,19 +43,29 @@ const Service = ({ mode = 'edit' }) => {
       definition: { glSteps: [] },
     };
 
+    setMessage('');
+    setError('');
+
     try {
       setLoading(true);
       if (mode === 'create') {
-        await createServiceAPI(payload);
+        await createServiceAPI(payload, token);
         reset();
       } else {
         await updateServiceAPI(payload, token);
       }
+      setMessage(
+        `${mode === 'create' ? 'Tạo' : 'Cập nhật'} dịch vụ thành công.`
+      );
       console.log(
         `${mode === 'create' ? 'Tạo' : 'Cập nhật'} dịch vụ thành công:`,
         payload
       );
     } catch (error) {
+      setError(
+        error.message ||
+          `${mode === 'create' ? 'Tạo' : 'Cập nhật'} dịch vụ thất bại.`
+      );
       console.error(
         `${mode === 'create' ? 'Tạo' : 'Cập nhật'} dịch vụ thất bại:`,
         error
@@ -66,7 +80,9 @@ const Service = ({ mode = 'edit' }) => {
       <Link
         component='button'
         underline='hover'
-        onClick={reset}
+        onClick={() => {
+          reset();
+        }}
         sx={{
           display: 'inline-flex',
           alignItems: 'center',
@@ -88,6 +104,18 @@ const Service = ({ mode = 'edit' }) => {
           <ValidationsSection />
           <TransFieldsSection />
           <FieldBuildersSection />
+
+          {error && (
+            <Grid size={12}>
+              <Alert severity='error'>{error}</Alert>
+            </Grid>
+          )}
+
+          {message && (
+            <Grid size={12}>
+              <Alert severity='success'>{message}</Alert>
+            </Grid>
+          )}
 
           <Grid size={12}>
             <Stack

@@ -93,6 +93,92 @@ const validateFuncs = {
     }
   },
 
+  async validateAmountPositive(trail) {
+    const { amount } = trail.inputMessage.transBody;
+
+    if (typeof amount !== 'number' || amount <= 0) {
+      throw new Error('AMOUNT_MUST_BE_POSITIVE');
+    }
+  },
+
+  async validateCustomerActive(trail) {
+    const { senderId } = trail.inputMessage.transBody;
+    const customer = await Customer.findOne({ id: senderId });
+
+    if (!customer) {
+      throw new Error('CUSTOMER_NOT_FOUND');
+    }
+
+    if (customer.status !== 'ACTIVE') {
+      throw new Error('CUSTOMER_NOT_ACTIVE');
+    }
+  },
+
+  async validateReceiverActive(trail) {
+    const { receiverId, receiverPhone } = trail.inputMessage.transBody;
+    let receiver = null;
+
+    if (receiverId) {
+      receiver = await Customer.findOne({ id: receiverId });
+    } else if (receiverPhone) {
+      receiver = await Customer.findOne({ phone: receiverPhone });
+    }
+
+    if (!receiver) {
+      throw new Error('RECEIVER_NOT_FOUND');
+    }
+
+    if (receiver.status !== 'ACTIVE') {
+      throw new Error('RECEIVER_NOT_ACTIVE');
+    }
+  },
+
+  async validateReceiverWalletExists(trail) {
+    const { receiverId, receiverPhone, receiverPocketId } =
+      trail.inputMessage.transBody;
+    let pocket = null;
+
+    if (receiverPocketId) {
+      pocket = await Pocket.findOne({ id: receiverPocketId });
+    } else {
+      let receiver = null;
+
+      if (receiverId) {
+        receiver = await Customer.findOne({ id: receiverId });
+      } else if (receiverPhone) {
+        receiver = await Customer.findOne({ phone: receiverPhone });
+      }
+
+      if (!receiver) {
+        throw new Error('RECEIVER_NOT_FOUND');
+      }
+
+      pocket = await Pocket.findOne({ owner: receiver.id });
+    }
+
+    if (!pocket) {
+      throw new Error('RECEIVER_WALLET_NOT_FOUND');
+    }
+  },
+
+  async validateBillOwner(trail) {
+    const { billerId, billCode } = trail.inputMessage.transBody;
+
+    if (!billerId || !billCode) {
+      throw new Error('BILL_INFO_REQUIRED');
+    }
+
+    const bill = await Bill.findOne({ biller: billerId, billCode });
+
+    if (!bill) {
+      throw new Error('BILL_OWNER_INVALID');
+    }
+
+    if (bill.status === 'paid') {
+      throw new Error('BILL_ALREADY_PAID');
+    }
+  },
+
   async validateReceiverExists(trail) {
     const { receiverPhone } = trail.inputMessage.transBody;
     const receiver = await Customer.findOne({ phone: receiverPhone });
@@ -137,6 +223,7 @@ const validateTransaction = async function ({ trail }) {
   }
 };
 
-validateTransaction.validatePocketChecksum = validateFuncs.validatePocketChecksum;
+validateTransaction.validatePocketChecksum =
+  validateFuncs.validatePocketChecksum;
 
 module.exports = validateTransaction;

@@ -16,6 +16,7 @@ import BillPayment from '../pages/BillPayment/BillPayment';
 import ServiceProvider from '../contexts/ServiceProvider';
 import BillList from '../pages/Bill/BillList';
 import BillEdit from '../pages/Bill/BillEdit';
+import BillerList from '../pages/Biller/BillerList';
 
 const router = createBrowserRouter([
   {
@@ -81,6 +82,10 @@ const router = createBrowserRouter([
       {
         path: 'services',
         element: <ServiceList />,
+      },
+      {
+        path: 'billers',
+        element: <BillerList />,
       },
       {
         path: 'bills',

@@ -11,6 +11,22 @@ export async function getBillersAPI(token) {
   return data.billers || data.data?.billers || [];
 }
 
+export async function createBillerAPI(payload, token) {
+  const response = await fetch(`${API_BASE_URL}/api/biller`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify(payload),
+  });
+  const data = await response.json();
+  if (!response.ok) {
+    throw new Error(data.message || 'Không thể tạo biller.');
+  }
+  return data;
+}
+
 export async function getBillsForBillerAPI(billerId, token) {
   const response = await fetch(`${API_BASE_URL}/api/biller/${billerId}/bills`, {
     headers: { Authorization: `Bearer ${token}` },
