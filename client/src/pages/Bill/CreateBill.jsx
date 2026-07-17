@@ -24,7 +24,7 @@ const initialForm = {
   billCode: '',
   name: '',
   amount: '',
-  customerId: '',
+  customerPhone: '',
 };
 
 export default function CreateBill() {
@@ -67,7 +67,7 @@ export default function CreateBill() {
         {
           ...form,
           amount: Number(form.amount),
-          customerId: form.customerId || undefined,
+          customerPhone: form.customerPhone || undefined,
         },
         token
       );
@@ -160,9 +160,9 @@ export default function CreateBill() {
 
             <TextField
               fullWidth
-              label='Customer ID (tuỳ chọn)'
-              name='customerId'
-              value={form.customerId}
+              label='Số điện thoại khách hàng (tuỳ chọn)'
+              name='customerPhone'
+              value={form.customerPhone}
               onChange={handleChange}
               margin='normal'
             />

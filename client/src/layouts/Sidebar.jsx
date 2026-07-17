@@ -68,6 +68,11 @@ const menuAdminItems = [
     path: '/admin/services',
   },
   {
+    text: 'Hóa đơn',
+    icon: <ReceiptLongRounded />,
+    path: '/admin/bills',
+  },
+  {
     text: 'Lịch sử giao dịch',
     icon: <History />,
     path: '/admin/transactions-history',
@@ -86,11 +91,6 @@ const menuAdminItems = [
     text: 'Tạo dịch vụ',
     icon: <AddCircle />,
     path: '/admin/service/create',
-  },
-  {
-    text: 'Tạo hóa đơn',
-    icon: <ReceiptLongRounded />,
-    path: '/admin/bill/create',
   },
 ];
 

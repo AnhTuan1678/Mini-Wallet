@@ -14,7 +14,8 @@ import CashIn from '../pages/CashIn/CashIn';
 import ServiceList from '../pages/Service/ServiceList';
 import BillPayment from '../pages/BillPayment/BillPayment';
 import ServiceProvider from '../contexts/ServiceProvider';
-import CreateBill from '../pages/Bill/CreateBill';
+import BillList from '../pages/Bill/BillList';
+import BillEdit from '../pages/Bill/BillEdit';
 
 const router = createBrowserRouter([
   {
@@ -82,8 +83,12 @@ const router = createBrowserRouter([
         element: <ServiceList />,
       },
       {
-        path: 'bill/create',
-        element: <CreateBill />,
+        path: 'bills',
+        element: <BillList />,
+      },
+      {
+        path: 'bill/:id/edit',
+        element: <BillEdit />,
       },
     ],
   },

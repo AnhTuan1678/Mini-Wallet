@@ -42,6 +42,9 @@ module.exports.policies = {
   },
 
   BillController: {
+    getAll: ['isLoggedIn', 'isAdmin'],
+    getById: ['isLoggedIn', 'isAdmin'],
+    update: ['isLoggedIn', 'isAdmin'],
     create: ['isLoggedIn', 'isAdmin'],
   },
 
