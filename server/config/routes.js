@@ -33,6 +33,7 @@ module.exports.routes = {
   'GET /api/biller/all': 'BillerController.getAll',
   'GET /api/biller/:billerId/bills': 'BillerController.getBillsForUser',
   'POST /api/biller': 'BillerController.create',
+  'PUT /api/biller/:billerId': 'BillerController.update',
   'GET /api/bill/all': 'BillController.getAll',
   'GET /api/bill/:id': 'BillController.getById',
   'PUT /api/bill/:id': 'BillController.update',

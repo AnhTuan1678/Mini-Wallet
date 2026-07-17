@@ -4,9 +4,11 @@ import {
   Card,
   CardActionArea,
   CardContent,
+  Chip,
   CircularProgress,
   Container,
   Grid,
+  Stack,
   Typography,
 } from '@mui/material';
 
@@ -70,6 +72,15 @@ const ServiceListContent = () => {
             <Card>
               <CardActionArea onClick={() => loadService(item)}>
                 <CardContent>
+                  <Stack direction='row' spacing={1} sx={{ mb: 1 }}>
+                    <Chip
+                      label={item.status ? 'Hoạt động' : 'Tạm dừng'}
+                      color={item.status ? 'success' : 'default'}
+                      size='small'
+                    />
+                    <Chip label={item.type || 'transfer'} size='small' />
+                  </Stack>
+
                   <Typography variant='h6'>{item.name}</Typography>
 
                   <Typography color='text.secondary' sx={{ mt: 1 }}>
@@ -81,6 +92,25 @@ const ServiceListContent = () => {
                       {item.description}
                     </Typography>
                   )}
+
+                  <Box sx={{ mt: 2 }}>
+                    <Typography variant='body2'>
+                      <strong>Phí:</strong>{' '}
+                      {item.feeValue > 0
+                        ? item.feeType === 'fixed'
+                          ? `${item.feeValue.toLocaleString()} MMK`
+                          : `${item.feeValue}%`
+                        : 'Miễn phí'}
+                    </Typography>
+
+                    <Typography variant='body2' sx={{ mt: 0.5 }}>
+                      <strong>Xác thực:</strong> {item.authMethod || 'none'}
+                    </Typography>
+
+                    <Typography variant='body2' sx={{ mt: 0.5 }}>
+                      <strong>Hành động:</strong> {item.action || 'none'}
+                    </Typography>
+                  </Box>
                 </CardContent>
               </CardActionArea>
             </Card>

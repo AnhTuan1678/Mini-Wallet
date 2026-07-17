@@ -76,7 +76,7 @@ export const useCashIn = (serviceCode) => {
         setConfirmData(result);
 
         setSuccess(
-          `Yêu cầu nạp ${result.amount.toLocaleString()} VNĐ cho ${result.receiverName} (${result.receiverPhone}) thành công!`
+          `Yêu cầu nạp ${result.amount.toLocaleString()} MMK cho ${result.receiverName} (${result.receiverPhone}) thành công!`
         );
 
         setTimeout(() => {

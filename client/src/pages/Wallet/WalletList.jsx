@@ -191,7 +191,8 @@ const WalletList = () => {
                         (wallet.owner?.role || wallet.type)
                       }
                       color={
-                        ROLE_CONFIG[wallet.owner?.role || wallet.type]?.color ?? 'default'
+                        ROLE_CONFIG[wallet.owner?.role || wallet.type]?.color ??
+                        'default'
                       }
                     />
                   </TableCell>
@@ -222,7 +223,12 @@ const WalletList = () => {
         fullWidth
       >
         <DialogTitle>
-          Lịch sử giao dịch - {selectedWallet?.owner?.name || (selectedWallet?.type === 'bank' ? 'Ngân hàng' : 'Hệ thống')} {selectedWallet?.owner?.phone ? `(${selectedWallet.owner.phone})` : ''}
+          Lịch sử giao dịch -{' '}
+          {selectedWallet?.owner?.name ||
+            (selectedWallet?.type === 'bank' ? 'Ngân hàng' : 'Hệ thống')}{' '}
+          {selectedWallet?.owner?.phone
+            ? `(${selectedWallet.owner.phone})`
+            : ''}
         </DialogTitle>
         <DialogContent>
           {transactionsLoading ? (
@@ -260,13 +266,13 @@ const WalletList = () => {
                         {transaction.receiverPocket?.owner?.phone || 'N/A'}
                       </TableCell>
                       <TableCell align='right'>
-                        {transaction.amount?.toLocaleString() || 0} đ
+                        {transaction.amount?.toLocaleString() || 0} MMK
                       </TableCell>
                       <TableCell align='right'>
-                        {transaction.fee?.toLocaleString() || 0} đ
+                        {transaction.fee?.toLocaleString() || 0} MMK
                       </TableCell>
                       <TableCell align='right'>
-                        {transaction.totalAmount?.toLocaleString() || 0} đ
+                        {transaction.totalAmount?.toLocaleString() || 0} MMK
                       </TableCell>
                       <TableCell>
                         <Chip

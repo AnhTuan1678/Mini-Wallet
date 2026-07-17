@@ -36,7 +36,7 @@ const CashInForm = ({
         <Alert severity='info' sx={{ mt: 2 }}>
           Phí:{' '}
           {service.feeType === 'fixed'
-            ? `${service.feeValue.toLocaleString()} VNĐ`
+            ? `${service.feeValue.toLocaleString()} MMK`
             : `${service.feeValue}% của số tiền`}
         </Alert>
       )}

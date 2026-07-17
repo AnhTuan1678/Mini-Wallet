@@ -84,7 +84,7 @@ export default function useTransfer(service) {
       const fee = result.fee || 0;
 
       setSuccess(
-        `Yêu cầu chuyển ${amount.toLocaleString()} VNĐ thành công! Phí: ${fee.toLocaleString()} VNĐ`
+        `Yêu cầu chuyển ${amount.toLocaleString()} MMK thành công! Phí: ${fee.toLocaleString()} MMK`
       );
 
       setTimeout(() => {

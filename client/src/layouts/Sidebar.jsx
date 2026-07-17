@@ -63,7 +63,7 @@ const menuAdminItems = [
     path: '/admin/wallet',
   },
   {
-    text: 'Dịch vụ',
+    text: 'Services',
     icon: <Settings />,
     path: '/admin/services',
   },

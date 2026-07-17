@@ -1,10 +1,12 @@
 import {
+  Box,
   Table,
   TableBody,
   TableCell,
   TableHead,
   TableRow,
   Chip,
+  Typography,
 } from '@mui/material';
 
 const STATUS = {
@@ -20,6 +22,32 @@ const STATUS = {
     label: 'Thất bại',
     color: 'error',
   },
+};
+
+const getPocketDisplay = (pocket) => {
+  if (!pocket) return { title: 'N/A', subtitle: '' };
+
+  if (pocket.type === 'system') {
+    return { title: 'System', subtitle: pocket.id || '' };
+  }
+
+  if (pocket.type === 'bank') {
+    return { title: 'Bank', subtitle: pocket.id || '' };
+  }
+
+  const ownerName =
+    pocket.owner?.name ||
+    pocket.customer?.name ||
+    pocket.biller?.name ||
+    pocket.name ||
+    pocket?.type ||
+    '';
+  const pocketId = pocket.id || '';
+
+  return {
+    title: ownerName || pocketId || 'N/A',
+    subtitle: ownerName && pocketId ? pocketId : '',
+  };
 };
 
 const TransactionTable = ({ transactions }) => {
@@ -50,27 +78,41 @@ const TransactionTable = ({ transactions }) => {
               <TableCell>{transaction.transRefId}</TableCell>
 
               <TableCell>
-                {transaction.senderPocket?.type === 'system'
-                  ? 'Hệ thống'
-                  : transaction.senderPocket?.id || 'N/A'}
+                <Box sx={{ display: 'flex', flexDirection: 'column' }}>
+                  <Typography variant='body2' fontWeight={600}>
+                    {getPocketDisplay(transaction.senderPocket).title}
+                  </Typography>
+                  {getPocketDisplay(transaction.senderPocket).subtitle && (
+                    <Typography variant='caption' color='text.secondary'>
+                      {getPocketDisplay(transaction.senderPocket).subtitle}
+                    </Typography>
+                  )}
+                </Box>
               </TableCell>
 
               <TableCell>
-                {transaction.receiverPocket?.type === 'system'
-                  ? 'Hệ thống'
-                  : transaction.receiverPocket?.id || 'N/A'}
+                <Box sx={{ display: 'flex', flexDirection: 'column' }}>
+                  <Typography variant='body2' fontWeight={600}>
+                    {getPocketDisplay(transaction.receiverPocket).title}
+                  </Typography>
+                  {getPocketDisplay(transaction.receiverPocket).subtitle && (
+                    <Typography variant='caption' color='text.secondary'>
+                      {getPocketDisplay(transaction.receiverPocket).subtitle}
+                    </Typography>
+                  )}
+                </Box>
               </TableCell>
 
               <TableCell align='right'>
-                {transaction.amount?.toLocaleString() || 0} đ
+                {transaction.amount?.toLocaleString() || 0} MMK
               </TableCell>
 
               <TableCell align='right'>
-                {transaction.fee?.toLocaleString() || 0} đ
+                {transaction.fee?.toLocaleString() || 0} MMK
               </TableCell>
 
               <TableCell align='right'>
-                {transaction.totalAmount?.toLocaleString() || 0} đ
+                {transaction.totalAmount?.toLocaleString() || 0} MMK
               </TableCell>
 
               <TableCell>

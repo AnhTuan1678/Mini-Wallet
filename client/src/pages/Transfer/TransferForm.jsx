@@ -178,7 +178,7 @@ const TransferForm = ({ service, title = 'Chuyển tiền', billers = [] }) => {
                           {bills.map((bill) => (
                             <MenuItem key={bill.id} value={bill.billCode}>
                               {bill.name} (
-                              {Number(bill.amount).toLocaleString()} VND)
+                              {Number(bill.amount).toLocaleString()} MMK)
                             </MenuItem>
                           ))}
                         </Select>
@@ -274,7 +274,7 @@ const TransferForm = ({ service, title = 'Chuyển tiền', billers = [] }) => {
                   Số tiền
                 </Typography>
                 <Typography fontWeight={600} color='primary'>
-                  {Number(previewData?.amount || 0).toLocaleString()} VNĐ
+                  {Number(previewData?.amount || 0).toLocaleString()} MMK
                 </Typography>
 
                 <Typography
@@ -285,7 +285,7 @@ const TransferForm = ({ service, title = 'Chuyển tiền', billers = [] }) => {
                   Phí
                 </Typography>
                 <Typography fontWeight={600}>
-                  {Number(previewData?.fee || 0).toLocaleString()} VNĐ
+                  {Number(previewData?.fee || 0).toLocaleString()} MMK
                 </Typography>
 
                 <Typography
@@ -296,7 +296,7 @@ const TransferForm = ({ service, title = 'Chuyển tiền', billers = [] }) => {
                   Tổng
                 </Typography>
                 <Typography fontWeight={700} color='primary' variant='h6'>
-                  {Number(previewData?.totalAmount || 0).toLocaleString()} VNĐ
+                  {Number(previewData?.totalAmount || 0).toLocaleString()} MMK
                 </Typography>
                 <Typography
                   variant='body2'

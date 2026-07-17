@@ -46,7 +46,6 @@ const FieldBuildersSection = ({
           <br />
           - Đối với loại dịch vụ transfer/bill-payment, cần tạo được
           senderPocketId và receiverPocketId
-          <br />- Điều này giúp thực hiện giao dịch thành công.
         </Typography>
         {builders.map((field, index) => (
           <FieldBuilderItem

@@ -8,6 +8,31 @@ module.exports = {
     return res.ok({ billers });
   },
 
+  async update(req, res) {
+    try {
+      const { billerId } = req.params;
+      const { name, inquiryUrl, paymentUrl, status } = req.body;
+
+      const existing = await Biller.findOne({ id: billerId });
+      if (!existing) {
+        return res.notFound({ message: 'Không tìm thấy biller.' });
+      }
+
+      const updateData = {};
+      if (name !== undefined) updateData.name = name;
+      if (inquiryUrl !== undefined) updateData.inquiryUrl = inquiryUrl;
+      if (paymentUrl !== undefined) updateData.paymentUrl = paymentUrl;
+      if (status !== undefined) updateData.status = status;
+
+      const updated = await Biller.updateOne({ id: billerId }).set(updateData);
+      const biller = await Biller.findOne({ id: billerId });
+
+      return res.ok({ biller });
+    } catch (error) {
+      return res.badRequest({ message: error.message });
+    }
+  },
+
   async create(req, res) {
     try {
       const { name, inquiryUrl, paymentUrl } = req.body;

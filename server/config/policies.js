@@ -38,6 +38,7 @@ module.exports.policies = {
   BillerController: {
     getAll: 'isLoggedIn',
     create: ['isLoggedIn', 'isAdmin'],
+    update: ['isLoggedIn', 'isAdmin'],
     getBillsForUser: 'isLoggedIn',
   },
 

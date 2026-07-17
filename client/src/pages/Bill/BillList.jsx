@@ -376,7 +376,7 @@ export default function BillList() {
                   </Typography>
 
                   <Typography variant='body2' sx={{ mt: 2, fontWeight: 600 }}>
-                    {Number(bill.amount).toLocaleString('vi-VN')} VND
+                    {Number(bill.amount).toLocaleString('vi-VN')} MMK
                   </Typography>
 
                   <Stack
