@@ -68,36 +68,58 @@ export default function BillList() {
     }
   };
 
-  const fetchBillers = async () => {
-    setCreateLoading(true);
-
-    try {
-      const data = await getBillersAPI(token);
-      setBillers(data);
-    } catch (err) {
-      console.error(err);
-    } finally {
-      setCreateLoading(false);
-    }
-  };
-
-  const fetchCustomers = async () => {
-    setCustomerLoading(true);
-
-    try {
-      const data = await getAllUsersAPI(token);
-      setCustomers(data);
-    } catch (err) {
-      console.error(err);
-    } finally {
-      setCustomerLoading(false);
-    }
-  };
-
   useEffect(() => {
-    fetchBills();
-    fetchBillers();
-    fetchCustomers();
+    let mounted = true;
+
+    (async () => {
+      // yield to next tick so any setState inside won't run synchronously in the effect
+      await Promise.resolve();
+
+      // Fetch bills
+      if (!mounted) return;
+      setLoading(true);
+      setError('');
+      try {
+        const data = await getAllBillsAPI(token);
+        if (!mounted) return;
+        setBills(Array.isArray(data) ? data : []);
+      } catch (err) {
+        if (!mounted) return;
+        setError(err.message || 'Không thể tải danh sách hóa đơn.');
+      } finally {
+        if (mounted) setLoading(false);
+      }
+
+      // Fetch billers
+      if (!mounted) return;
+      setCreateLoading(true);
+      try {
+        const data = await getBillersAPI(token);
+        if (!mounted) return;
+        setBillers(data);
+      } catch (err) {
+        console.error(err);
+      } finally {
+        if (mounted) setCreateLoading(false);
+      }
+
+      // Fetch customers
+      if (!mounted) return;
+      setCustomerLoading(true);
+      try {
+        const data = await getAllUsersAPI(token);
+        if (!mounted) return;
+        setCustomers(data);
+      } catch (err) {
+        console.error(err);
+      } finally {
+        if (mounted) setCustomerLoading(false);
+      }
+    })();
+
+    return () => {
+      mounted = false;
+    };
   }, [token]);
 
   const normalizeCustomerPhone = (value) => {
@@ -137,7 +159,7 @@ export default function BillList() {
   if (loading) {
     return (
       <Container sx={{ py: 4 }}>
-        <Box display='flex' justifyContent='center'>
+        <Box sx={{ display: 'flex', justifyContent: 'center' }}>
           <CircularProgress />
         </Box>
       </Container>
@@ -147,10 +169,12 @@ export default function BillList() {
   return (
     <Container maxWidth='lg' sx={{ py: 4 }}>
       <Box
-        display='flex'
-        justifyContent='space-between'
-        alignItems='center'
-        sx={{ mb: 3 }}
+        sx={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          mb: 3,
+        }}
       >
         <Typography variant='h4' fontWeight={700}>
           Danh sách hóa đơn
@@ -317,13 +341,15 @@ export default function BillList() {
       ) : (
         <Grid container spacing={3}>
           {bills.map((bill) => (
-            <Grid key={bill.id} item xs={12} sm={6} md={4}>
+            <Grid key={bill.id} xs={12} sm={6} md={4}>
               <Card>
                 <CardContent>
                   <Box
-                    display='flex'
-                    justifyContent='space-between'
-                    alignItems='center'
+                    sx={{
+                      display: 'flex',
+                      justifyContent: 'space-between',
+                      alignItems: 'center',
+                    }}
                   >
                     <Typography variant='h6'>{bill.name}</Typography>
                     <Chip
@@ -355,8 +381,7 @@ export default function BillList() {
 
                   <Stack
                     direction='row'
-                    justifyContent='flex-end'
-                    sx={{ mt: 2 }}
+                    sx={{ mt: 2, justifyContent: 'flex-end' }}
                   >
                     <Button
                       size='small'

@@ -24,6 +24,7 @@ export default function useTransfer(service) {
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
   const [transRefId, setTransRefId] = useState('');
+  const [previewData, setPreviewData] = useState(null);
   const [pin, setPin] = useState('');
   const [requestData, setRequestData] = useState(() =>
     buildRequestData(service)
@@ -79,6 +80,7 @@ export default function useTransfer(service) {
       const result = await requestTransactionAPI(body, token);
 
       setTransRefId(result.transRefId);
+      setPreviewData(result);
 
       const amount = result.amount || 0;
       const fee = result.fee || 0;
@@ -155,6 +157,7 @@ export default function useTransfer(service) {
     error,
     success,
     requestData,
+    previewData,
     pin,
 
     handleRequestChange,

@@ -30,6 +30,7 @@ const TransferForm = ({ service, title = 'Chuyển tiền', billers = [] }) => {
     error,
     success,
     requestData,
+    previewData,
     pin,
     handleRequestChange,
     handlePinChange,
@@ -223,6 +224,81 @@ const TransferForm = ({ service, title = 'Chuyển tiền', billers = [] }) => {
               <Typography sx={{ mb: 3 }}>
                 Vui lòng xác nhận thông tin chuyển tiền
               </Typography>
+
+              <Box
+                sx={{
+                  mb: 3,
+                  p: 2,
+                  border: '1px solid',
+                  borderColor: 'divider',
+                  borderRadius: 2,
+                  backgroundColor: 'grey.50',
+                }}
+              >
+                <Typography
+                  variant='body2'
+                  color='text.secondary'
+                  sx={{ mb: 1 }}
+                >
+                  Người nhận
+                </Typography>
+                <Typography fontWeight={600}>
+                  {previewData?.receiverName || 'N/A'}
+                  {previewData?.receiverPhone
+                    ? ` (${previewData.receiverPhone})`
+                    : ''}
+                </Typography>
+
+                <Typography
+                  variant='body2'
+                  color='text.secondary'
+                  sx={{ mt: 1.5, mb: 1 }}
+                >
+                  Ví nhận
+                </Typography>
+                <Typography fontWeight={600}>
+                  {previewData?.receiverWallet?.id ||
+                    previewData?.receiverPocketId ||
+                    'N/A'}
+                  {previewData?.receiverWallet?.type ||
+                  previewData?.receiverPocketType
+                    ? ` (${previewData?.receiverWallet?.type || previewData?.receiverPocketType})`
+                    : ''}
+                </Typography>
+
+                <Typography
+                  variant='body2'
+                  color='text.secondary'
+                  sx={{ mt: 1.5, mb: 1 }}
+                >
+                  Số tiền
+                </Typography>
+                <Typography fontWeight={600} color='primary'>
+                  {Number(previewData?.amount || 0).toLocaleString()} VNĐ
+                </Typography>
+
+                <Typography
+                  variant='body2'
+                  color='text.secondary'
+                  sx={{ mt: 1.5, mb: 1 }}
+                >
+                  Phí
+                </Typography>
+                <Typography fontWeight={600}>
+                  {Number(previewData?.fee || 0).toLocaleString()} VNĐ
+                </Typography>
+
+                <Typography
+                  variant='body2'
+                  color='text.secondary'
+                  sx={{ mt: 1.5, mb: 1 }}
+                >
+                  Tổng
+                </Typography>
+                <Typography fontWeight={700} color='primary' variant='h6'>
+                  {Number(previewData?.totalAmount || 0).toLocaleString()} VNĐ
+                </Typography>
+              </Box>
 
               <Button
                 fullWidth

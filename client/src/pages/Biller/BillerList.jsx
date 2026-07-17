@@ -7,11 +7,7 @@ import {
   CardContent,
   CircularProgress,
   Container,
-  FormControl,
   Grid,
-  InputLabel,
-  MenuItem,
-  Select,
   Stack,
   TextField,
   Typography,
@@ -23,7 +19,6 @@ const initialForm = {
   name: '',
   inquiryUrl: '',
   paymentUrl: '',
-  pocket: '',
 };
 
 export default function BillerList() {
@@ -52,7 +47,28 @@ export default function BillerList() {
   };
 
   useEffect(() => {
-    fetchBillers();
+    let mounted = true;
+
+    (async () => {
+      await Promise.resolve();
+      if (!mounted) return;
+      setLoading(true);
+      setError('');
+      try {
+        const data = await getBillersAPI(token);
+        if (!mounted) return;
+        setBillers(Array.isArray(data) ? data : []);
+      } catch (err) {
+        if (!mounted) return;
+        setError(err.message || 'Không thể tải danh sách biller.');
+      } finally {
+        if (mounted) setLoading(false);
+      }
+    })();
+
+    return () => {
+      mounted = false;
+    };
   }, [token]);
 
   const handleCreateChange = (e) => {
@@ -67,6 +83,7 @@ export default function BillerList() {
     setCreating(true);
 
     try {
+      console.log('Creating biller with payload:', createForm);
       await createBillerAPI(createForm, token);
       setCreateMessage('Tạo biller thành công.');
       setCreateForm(initialForm);
@@ -81,10 +98,12 @@ export default function BillerList() {
   return (
     <Container maxWidth='lg' sx={{ py: 4 }}>
       <Box
-        display='flex'
-        justifyContent='space-between'
-        alignItems='center'
-        sx={{ mb: 3 }}
+        sx={{
+          mb: 3,
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+        }}
       >
         <Typography variant='h4' fontWeight={700}>
           Danh sách Biller
@@ -134,15 +153,6 @@ export default function BillerList() {
                 name='inquiryUrl'
                 value={createForm.inquiryUrl}
                 onChange={handleCreateChange}
-                margin='normal'
-                required
-              />
-
-              <TextField
-                fullWidth
-                label='URL payment'
-                name='paymentUrl'
-                value={createForm.paymentUrl}
                 onChange={handleCreateChange}
                 margin='normal'
                 required
@@ -150,9 +160,9 @@ export default function BillerList() {
 
               <TextField
                 fullWidth
-                label='Pocket'
-                name='pocket'
-                value={createForm.pocket}
+                label='Payment URL'
+                name='paymentUrl'
+                value={createForm.paymentUrl}
                 onChange={handleCreateChange}
                 margin='normal'
                 required
@@ -173,7 +183,7 @@ export default function BillerList() {
       )}
 
       {loading ? (
-        <Box display='flex' justifyContent='center'>
+        <Box sx={{ display: 'flex', justifyContent: 'center' }}>
           <CircularProgress />
         </Box>
       ) : error ? (
@@ -183,7 +193,7 @@ export default function BillerList() {
       ) : (
         <Grid container spacing={3}>
           {billers.map((biller) => (
-            <Grid key={biller.id} item xs={12} sm={6} md={4}>
+            <Grid key={biller.id} xs={12} sm={6} md={4}>
               <Card>
                 <CardContent>
                   <Typography variant='h6'>{biller.name}</Typography>

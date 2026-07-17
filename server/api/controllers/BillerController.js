@@ -10,14 +10,33 @@ module.exports = {
 
   async create(req, res) {
     try {
-      const { name, inquiryUrl, paymentUrl, pocket } = req.body;
+      const { name, inquiryUrl, paymentUrl } = req.body;
 
-      if (!name || !inquiryUrl || !paymentUrl || !pocket) {
+      if (!name || !inquiryUrl || !paymentUrl) {
         throw new Error('Thiếu thông tin biller.');
       }
 
+      const { generateChecksum } = require('../services/PocketService');
+
+      // create a pocket for this biller
+      const pocket = await Pocket.create({
+        type: 'biller',
+        balance: 0,
+        checksum: generateChecksum({
+          owner: null,
+          type: 'biller',
+          currency: 'VND',
+          balance: 0,
+        }),
+      }).fetch();
+
       return res.created(
-        await Biller.create({ name, inquiryUrl, paymentUrl, pocket }).fetch()
+        await Biller.create({
+          name,
+          inquiryUrl,
+          paymentUrl,
+          pocket: pocket.id,
+        }).fetch()
       );
     } catch (error) {
       return res.badRequest({ message: error.message });

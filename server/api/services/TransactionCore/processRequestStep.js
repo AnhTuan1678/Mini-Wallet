@@ -19,7 +19,9 @@ module.exports = async (transInput) => {
     throw new Error('Service not found');
   }
 
-  if (!service.status) {throw new Error('Dịch vụ đang tạm ngừng.');}
+  if (!service.status) {
+    throw new Error('Dịch vụ đang tạm ngừng.');
+  }
 
   const transBody = await buildFields({
     service,
@@ -52,7 +54,9 @@ module.exports = async (transInput) => {
       transBody.billerName = inquiry.biller.name;
       transBody.billName = inquiry.billName;
       biller = inquiry.biller;
-      await TransactionTrail.updateOne({ id: trail.id }).set({ inputMessage: { ...trail.inputMessage, transBody } });
+      await TransactionTrail.updateOne({ id: trail.id }).set({
+        inputMessage: { ...trail.inputMessage, transBody },
+      });
     }
 
     const feeSnapshot = calculateFee(
@@ -65,6 +69,12 @@ module.exports = async (transInput) => {
       transBody.amount
     );
     const totalAmount = transBody.amount + feeSnapshot;
+    const receiverWallet = transBody.receiverPocketId
+      ? {
+          id: transBody.receiverPocketId || null,
+          type: transBody.receiverPocketType || null,
+        }
+      : null;
     trail.feeSnapshot = feeSnapshot; // Lưu lại phí tạm thời vào trail
 
     await validateTransaction({ trail });
@@ -107,7 +117,10 @@ module.exports = async (transInput) => {
       totalAmount,
       transRefId: trail.id,
       receiverName: transBody.receiverName || null,
-      receiverPhone: transBody.receiverPhone,
+      receiverPhone: transBody.receiverPhone || null,
+      receiverPocketId: transBody.receiverPocketId || null,
+      receiverPocketType: transBody.receiverPocketType || null,
+      receiverWallet,
       billCode: transBody.billCode || null,
       billerName: (biller && biller.name) || null,
     };

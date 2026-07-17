@@ -131,7 +131,7 @@ module.exports = async function ({ service, transInput }) {
     })) || [];
   fields.sort((a, b) => a.order - b.order);
 
-  const result = {};
+  const result = { flatInput };
 
   for (const field of fields) {
     const value = await buildField(field, flatInput);
