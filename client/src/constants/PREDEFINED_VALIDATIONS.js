@@ -51,7 +51,7 @@ export const PREDEFINED_VALIDATIONS = [
     validateFunc: 'validateCustomerActive',
     validateFields: 'senderId',
     errorCode: 'CUSTOMER_NOT_ACTIVE',
-    description: 'Khách hàng gửi phải đang hoạt động',
+    description: 'Người gửi phải đang hoạt động',
   },
   {
     validateFunc: 'validateReceiverActive',

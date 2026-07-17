@@ -20,25 +20,6 @@ import {
 import { getAllUsersAPI, updateUserStatusAPI } from '../../services/userApi';
 import useAuth from '../../contexts/useAuth';
 
-const STATUS_CONFIG = {
-  ACTIVE: {
-    label: 'Hoạt động',
-    color: 'success',
-  },
-  INACTIVE: {
-    label: 'Không hoạt động',
-    color: 'default',
-  },
-  SUSPENDED: {
-    label: 'Tạm khóa',
-    color: 'warning',
-  },
-  BLOCKED: {
-    label: 'Khóa',
-    color: 'error',
-  },
-};
-
 const ROLE_CONFIG = {
   customer: {
     label: 'Khách hàng',
@@ -162,14 +143,13 @@ const UserManagement = () => {
               <TableCell>Tên</TableCell>
               <TableCell>Vai trò</TableCell>
               <TableCell>Trạng thái</TableCell>
-              <TableCell align='right'>Thao tác</TableCell>
             </TableRow>
           </TableHead>
 
           <TableBody>
             {users.length === 0 ? (
               <TableRow>
-                <TableCell colSpan={7} align='center'>
+                <TableCell colSpan={6} align='center'>
                   Không có người dùng nào
                 </TableCell>
               </TableRow>
@@ -188,17 +168,10 @@ const UserManagement = () => {
                     />
                   </TableCell>
                   <TableCell>
-                    <Chip
-                      size='small'
-                      label={STATUS_CONFIG[user.status]?.label ?? user.status}
-                      color={STATUS_CONFIG[user.status]?.color ?? 'default'}
-                    />
-                  </TableCell>
-                  <TableCell align='right'>
                     {updatingUserId === user.id ? (
                       <CircularProgress size={24} />
                     ) : (
-                      <FormControl size='small' sx={{ minWidth: 120 }}>
+                      <FormControl size='small' sx={{ minWidth: 150 }}>
                         <InputLabel>Trạng thái</InputLabel>
                         <Select
                           value={user.status}
@@ -207,11 +180,41 @@ const UserManagement = () => {
                             handleStatusChange(user.id, e.target.value)
                           }
                           disabled={user.role === 'admin'}
+                          sx={{
+                            color:
+                              user.status === 'ACTIVE'
+                                ? 'success.main'
+                                : user.status === 'INACTIVE'
+                                  ? 'text.disabled'
+                                  : user.status === 'SUSPENDED'
+                                    ? 'warning.main'
+                                    : 'error.main',
+                          }}
                         >
-                          <MenuItem value='ACTIVE'>Hoạt động</MenuItem>
-                          <MenuItem value='INACTIVE'>Không hoạt động</MenuItem>
-                          <MenuItem value='SUSPENDED'>Tạm khóa</MenuItem>
-                          <MenuItem value='BLOCKED'>Khóa</MenuItem>
+                          <MenuItem
+                            value='ACTIVE'
+                            sx={{ color: 'success.main' }}
+                          >
+                            ✓ Hoạt động
+                          </MenuItem>
+                          <MenuItem
+                            value='INACTIVE'
+                            sx={{ color: 'text.disabled' }}
+                          >
+                            Không hoạt động
+                          </MenuItem>
+                          <MenuItem
+                            value='SUSPENDED'
+                            sx={{ color: 'warning.main' }}
+                          >
+                            ⚠ Tạm khóa
+                          </MenuItem>
+                          <MenuItem
+                            value='BLOCKED'
+                            sx={{ color: 'error.main' }}
+                          >
+                            ✕ Khóa
+                          </MenuItem>
                         </Select>
                       </FormControl>
                     )}

@@ -48,6 +48,7 @@ module.exports = {
       email: customer.email,
       phone: customer.phone,
       role: customer.role,
+      status: customer.status,
     };
 
     const token = jwt.sign(payload, sails.config.custom.jwtSecret, {
@@ -124,7 +125,6 @@ module.exports = {
 
   getAll: async () => {
     const customers = await Customer.find().sort('createdAt DESC');
-    sails.log.info(`Found ${customers.length} customers`);
 
     return customers.map((customer) => _.omit(customer, ['password', 'pin']));
   },
