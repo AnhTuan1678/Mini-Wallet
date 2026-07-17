@@ -35,6 +35,21 @@ const TransFieldsSection = ({
           <Typography variant='h6' sx={{ mb: 2, fontWeight: 600 }}>
             Trans Fields (Các trường dữ liệu đầu vào của service)
           </Typography>
+          <Typography variant='body2' color='text.secondary' sx={{ mb: 2 }}>
+            - Trans Fields định nghĩa từng trường đầu vào cần validate
+            <br />
+            - Mỗi TransField là trường trong TRANSBODY, dùng để kiểm tra kiểu,
+            bắt buộc, giá trị
+            <br />
+            - code là tên biến đầu vào, type là loại dữ liệu, required xác định
+            bắt buộc
+            <br />
+            - maxLength = 0 nghĩa không giới hạn độ dài
+            <br />- Các TransField này validate định dạng trước khi engine xử lý
+            nghiệp vụ.
+            <br />- Loại transfer, cash-in, bắt buộc phải có amount,
+            receiverPhone
+          </Typography>
 
           {fields.map((field, index) => (
             <TransFieldItem
@@ -45,11 +60,6 @@ const TransFieldsSection = ({
               onRemove={removeField}
             />
           ))}
-
-          {/* Lưu ý */}
-          <Typography variant='subtitle2' sx={{ mt: 2, mb: 1 }}>
-            Độ dài tối đa nếu là 0 thì không giới hạn.
-          </Typography>
 
           <Button startIcon={<AddIcon />} variant='outlined' onClick={addField}>
             Thêm TransField

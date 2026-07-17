@@ -49,11 +49,15 @@ const query = {
   },
 
   async queryBillerPocketById(billerId) {
-    if (!billerId) {return null;}
+    if (!billerId) {
+      return null;
+    }
 
     const biller = await Biller.findOne({ id: billerId, status: true });
 
-    if (!biller || !biller.pocket) {return null;}
+    if (!biller || !biller.pocket) {
+      return null;
+    }
 
     return await Pocket.findOne({ id: biller.pocket });
   },
@@ -141,3 +145,5 @@ module.exports = async function ({ service, transInput }) {
 
   return result;
 };
+
+module.exports.queryFunctions = query;

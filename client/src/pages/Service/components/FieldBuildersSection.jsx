@@ -33,6 +33,21 @@ const FieldBuildersSection = ({
         <Typography variant='h6' sx={{ mb: 2, fontWeight: 600 }}>
           Field Builders
         </Typography>
+        <Typography variant='body2' color='text.secondary' sx={{ mb: 2 }}>
+          - Field Builders dùng để xác định các trường sẽ được dựng thành dữ
+          liệu
+          <br />
+          - Với các trường kiểu "mapping", chỉ cần chỉ ra tên trường đầu vào
+          phẳng từ request
+          <br />- Nếu query từ DB trả về object thì sẽ làm phẳng bằng cách dùng
+          prefix = tên object (Ví dụ: <code>
+            sender = {'{ id, name }'}
+          </code> → <code>senderId</code>, <code>senderName</code>)
+          <br />
+          - Đối với loại dịch vụ transfer/bill-payment, cần tạo được
+          senderPocketId và receiverPocketId
+          <br />- Điều này giúp thực hiện giao dịch thành công.
+        </Typography>
         {builders.map((field, index) => (
           <FieldBuilderItem
             key={field.id ?? index}

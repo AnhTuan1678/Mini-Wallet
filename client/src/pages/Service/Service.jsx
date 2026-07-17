@@ -63,8 +63,10 @@ const Service = ({ mode = 'edit' }) => {
       );
     } catch (error) {
       setError(
-        error.message ||
-          `${mode === 'create' ? 'Tạo' : 'Cập nhật'} dịch vụ thất bại.`
+        error.errors
+          ? error.errors.join(', ')
+          : error.message ||
+              `${mode === 'create' ? 'Tạo' : 'Cập nhật'} dịch vụ thất bại.`
       );
       console.error(
         `${mode === 'create' ? 'Tạo' : 'Cập nhật'} dịch vụ thất bại:`,

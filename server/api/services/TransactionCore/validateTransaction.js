@@ -225,5 +225,6 @@ const validateTransaction = async function ({ trail }) {
 
 validateTransaction.validatePocketChecksum =
   validateFuncs.validatePocketChecksum;
+validateTransaction.validateFuncs = validateFuncs;
 
 module.exports = validateTransaction;

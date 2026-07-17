@@ -1,3 +1,6 @@
+const buildFields = require('./TransactionCore/buildFields');
+const validateTransaction = require('./TransactionCore/validateTransaction');
+
 const filterRequiredFields = (service) => ({
   id: service.id,
   code: service.code,
@@ -18,9 +21,30 @@ const filterRequiredFields = (service) => ({
   transValidations: service.transValidations,
 });
 
+const SUPPORTED_VALIDATE_FUNCS = Object.keys(
+  validateTransaction.validateFuncs || {}
+);
+const SUPPORTED_QUERY_FUNCTIONS = Object.keys(buildFields.queryFunctions || {});
+
+const buildSupportedListMessage = (items) => items.join(', ');
+
+const isValidRegex = (pattern) => {
+  try {
+    new RegExp(pattern);
+
+    return true;
+  } catch (unusedErr) {
+    return false;
+  }
+};
+
 const validateServiceConfig = (serviceData) => {
   const errors = [];
+  // validateServiceConfig: kiểm tra cấu hình service trước khi lưu hoặc cập nhật
+  // Mục tiêu là chặn config không hợp lệ, vì nếu lưu vào DB mà config sai thì dịch vụ sẽ không chạy được.
 
+  // Kiểm tra cấu hình bắt buộc của dịch vụ
+  // code và name phải tồn tại và là chuỗi
   if (!serviceData.code || typeof serviceData.code !== 'string') {
     errors.push('code is required and must be a string');
   }
@@ -29,6 +53,7 @@ const validateServiceConfig = (serviceData) => {
     errors.push('name is required and must be a string');
   }
 
+  // Kiểm tra phương thức xác thực: pin, none hoặc otp
   if (
     serviceData.authMethod &&
     !['pin', 'none', 'otp'].includes(serviceData.authMethod)
@@ -36,6 +61,7 @@ const validateServiceConfig = (serviceData) => {
     errors.push('authMethod must be one of: pin, none, otp');
   }
 
+  // Kiểm tra loại dịch vụ hợp lệ
   if (
     serviceData.type &&
     !['transfer', 'cash-in', 'bill-payment', 'service'].includes(
@@ -47,6 +73,10 @@ const validateServiceConfig = (serviceData) => {
     );
   }
 
+  // Ghi chú: type xác định luồng xử lý giao dịch, nên phải đúng với những gì backend hỗ trợ.
+  // transfer: chuyển tiền, cash-in: nạp tiền, bill-payment: thanh toán hóa đơn, service: dịch vụ phụ trợ.
+
+  // Kiểm tra action của dịch vụ, hiện chỉ hỗ trợ none hoặc billerTrans
   if (
     serviceData.action &&
     !['none', 'billerTrans'].includes(serviceData.action)
@@ -54,6 +84,7 @@ const validateServiceConfig = (serviceData) => {
     errors.push('action must be one of: none, billerTrans');
   }
 
+  // Kiểm tra loại phí hợp lệ
   if (
     serviceData.feeType &&
     !['fixed', 'percent'].includes(serviceData.feeType)
@@ -61,6 +92,7 @@ const validateServiceConfig = (serviceData) => {
     errors.push('feeType must be one of: fixed, percent');
   }
 
+  // Kiểm tra cấu hình phí: feeValue, feeMax, feeMin phải là số không âm
   if (
     serviceData.feeValue !== undefined &&
     (typeof serviceData.feeValue !== 'number' || serviceData.feeValue < 0)
@@ -97,37 +129,8 @@ const validateServiceConfig = (serviceData) => {
     errors.push('status must be a boolean');
   }
 
-  if (serviceData.validations !== undefined) {
-    if (!Array.isArray(serviceData.validations)) {
-      errors.push('validations must be an array');
-    } else {
-      serviceData.validations.forEach((validation, index) => {
-        if (!validation.order || typeof validation.order !== 'number') {
-          errors.push(
-            `validations[${index}].order is required and must be a number`
-          );
-        }
-
-        if (
-          !validation.validateFunc ||
-          typeof validation.validateFunc !== 'string'
-        ) {
-          errors.push(
-            `validations[${index}].validateFunc is required and must be a string`
-          );
-        }
-
-        if (
-          !validation.validateFields ||
-          typeof validation.validateFields !== 'string'
-        ) {
-          errors.push(
-            `validations[${index}].validateFields is required and must be a string`
-          );
-        }
-      });
-    }
-  }
+  const transFieldCodes = new Set();
+  const fieldBuilderCodes = new Set();
 
   if (serviceData.transFields !== undefined) {
     if (!Array.isArray(serviceData.transFields)) {
@@ -144,6 +147,10 @@ const validateServiceConfig = (serviceData) => {
           errors.push(
             `transFields[${index}].code is required and must be a string`
           );
+        } else if (transFieldCodes.has(field.code)) {
+          errors.push(`transFields[${index}].code must be unique`);
+        } else {
+          transFieldCodes.add(field.code);
         }
 
         if (
@@ -182,9 +189,17 @@ const validateServiceConfig = (serviceData) => {
             `transFields[${index}].minLength cannot be greater than maxLength`
           );
         }
+
+        if (field.regex && !isValidRegex(field.regex)) {
+          errors.push(
+            `transFields[${index}].regex is not a valid regular expression`
+          );
+        }
       });
     }
   }
+
+  // Kiểm tra cấu hình transFields: mỗi trường phải có order, code, dataType hợp lệ
 
   if (serviceData.fieldBuilders !== undefined) {
     if (!Array.isArray(serviceData.fieldBuilders)) {
@@ -201,6 +216,10 @@ const validateServiceConfig = (serviceData) => {
           errors.push(
             `fieldBuilders[${index}].code is required and must be a string`
           );
+        } else if (fieldBuilderCodes.has(builder.code)) {
+          errors.push(`fieldBuilders[${index}].code must be unique`);
+        } else {
+          fieldBuilderCodes.add(builder.code);
         }
 
         if (!builder.name || typeof builder.name !== 'string') {
@@ -228,6 +247,103 @@ const validateServiceConfig = (serviceData) => {
             `fieldBuilders[${index}].rule must be one of: fixed, mapping, query`
           );
         }
+
+        if (builder.rule === 'fixed') {
+          if (builder.value === undefined) {
+            errors.push(
+              `fieldBuilders[${index}].value is required for fixed rule`
+            );
+          }
+        }
+
+        // mapping: nguồn dữ liệu được lấy từ một field phẳng trong request
+        if (builder.rule === 'mapping') {
+          if (!builder.sourceField || typeof builder.sourceField !== 'string') {
+            errors.push(
+              `fieldBuilders[${index}].sourceField is required and must be a string for mapping rule`
+            );
+          }
+        }
+
+        if (builder.rule === 'query') {
+          if (!builder.query || typeof builder.query !== 'string') {
+            errors.push(
+              `fieldBuilders[${index}].query is required and must be a string for query rule`
+            );
+          } else if (!SUPPORTED_QUERY_FUNCTIONS.includes(builder.query)) {
+            errors.push(
+              `fieldBuilders[${index}].query must be one of: ${buildSupportedListMessage(
+                SUPPORTED_QUERY_FUNCTIONS
+              )}`
+            );
+          }
+
+          // query: trường này dùng hàm query để lấy dữ liệu từ DB dựa trên các trường khác
+          if (!Array.isArray(builder.queryFields)) {
+            errors.push(
+              `fieldBuilders[${index}].queryFields is required and must be an array for query rule`
+            );
+          } else {
+            builder.queryFields.forEach((fieldName, fieldIndex) => {
+              if (typeof fieldName !== 'string') {
+                errors.push(
+                  `fieldBuilders[${index}].queryFields[${fieldIndex}] must be a string`
+                );
+              }
+            });
+          }
+
+          if (
+            builder.columns !== undefined &&
+            !Array.isArray(builder.columns)
+          ) {
+            errors.push(
+              `fieldBuilders[${index}].columns must be an array if provided`
+            );
+          }
+        }
+      });
+    }
+  }
+
+  if (serviceData.validations !== undefined) {
+    if (!Array.isArray(serviceData.validations)) {
+      errors.push('validations must be an array');
+    } else {
+      serviceData.validations.forEach((validation, index) => {
+        if (!validation.order || typeof validation.order !== 'number') {
+          errors.push(
+            `validations[${index}].order is required and must be a number`
+          );
+        }
+
+        // validations: mỗi rule validate phải có validateFunc và validateFields
+
+        if (
+          !validation.validateFunc ||
+          typeof validation.validateFunc !== 'string'
+        ) {
+          errors.push(
+            `validations[${index}].validateFunc is required and must be a string`
+          );
+        } else if (
+          !SUPPORTED_VALIDATE_FUNCS.includes(validation.validateFunc)
+        ) {
+          errors.push(
+            `validations[${index}].validateFunc must be one of: ${buildSupportedListMessage(
+              SUPPORTED_VALIDATE_FUNCS
+            )}`
+          );
+        }
+
+        if (
+          !validation.validateFields ||
+          typeof validation.validateFields !== 'string'
+        ) {
+          errors.push(
+            `validations[${index}].validateFields is required and must be a string`
+          );
+        }
       });
     }
   }
@@ -239,6 +355,47 @@ const validateServiceConfig = (serviceData) => {
     ) {
       errors.push('definition.glSteps must be an array');
     }
+  }
+
+  const hasAmountField =
+    (serviceData.transFields || []).some((field) => field.code === 'amount') ||
+    (serviceData.fieldBuilders || []).some(
+      (builder) => builder.code === 'amount'
+    );
+
+  if (
+    serviceData.type &&
+    ['transfer', 'cash-in'].includes(serviceData.type) &&
+    !hasAmountField
+  ) {
+    errors.push(
+      'transfer and cash-in services must define an amount field in transFields or fieldBuilders'
+    );
+  }
+
+  const hasBillerIdField =
+    (serviceData.transFields || []).some(
+      (field) => field.code === 'billerId'
+    ) ||
+    (serviceData.fieldBuilders || []).some(
+      (builder) => builder.code === 'billerId'
+    );
+  const hasBillCodeField =
+    (serviceData.transFields || []).some(
+      (field) => field.code === 'billCode'
+    ) ||
+    (serviceData.fieldBuilders || []).some(
+      (builder) => builder.code === 'billCode'
+    );
+
+  if (
+    (serviceData.type === 'bill-payment' ||
+      serviceData.action === 'billerTrans') &&
+    (!hasBillerIdField || !hasBillCodeField)
+  ) {
+    errors.push(
+      'bill-payment / billerTrans services must define billerId and billCode fields in transFields or fieldBuilders'
+    );
   }
 
   return errors;

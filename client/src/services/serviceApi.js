@@ -42,7 +42,7 @@ export const createServiceAPI = async (serviceData, token) => {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      'Authorization': `Bearer ${token}`,
+      Authorization: `Bearer ${token}`,
     },
     body: JSON.stringify(serviceData),
   });
@@ -54,7 +54,11 @@ export const createServiceAPI = async (serviceData, token) => {
     (data.error && data.error !== 200 && data.error !== 201)
   ) {
     console.error('Create service failed:', data);
-    throw new Error(data.message || 'Tạo dịch vụ thất bại');
+    const error = new Error(data.message || 'Tạo dịch vụ thất bại');
+    if (data.errors) {
+      error.errors = data.errors;
+    }
+    throw error;
   }
 
   return data;
@@ -65,7 +69,7 @@ export const updateServiceAPI = async (serviceData, token) => {
     method: 'PUT',
     headers: {
       'Content-Type': 'application/json',
-      'Authorization': `Bearer ${token}`,
+      Authorization: `Bearer ${token}`,
     },
     body: JSON.stringify(serviceData),
   });
@@ -74,7 +78,11 @@ export const updateServiceAPI = async (serviceData, token) => {
 
   if (!response.ok || (data.error && data.error !== 200)) {
     console.error('Update service failed:', data);
-    throw new Error(data.message || 'Cập nhật dịch vụ thất bại');
+    const error = new Error(data.message || 'Cập nhật dịch vụ thất bại');
+    if (data.errors) {
+      error.errors = data.errors;
+    }
+    throw error;
   }
 
   return data;
