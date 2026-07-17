@@ -83,7 +83,6 @@ export default function BillerList() {
     setCreating(true);
 
     try {
-      console.log('Creating biller with payload:', createForm);
       await createBillerAPI(createForm, token);
       setCreateMessage('Tạo biller thành công.');
       setCreateForm(initialForm);

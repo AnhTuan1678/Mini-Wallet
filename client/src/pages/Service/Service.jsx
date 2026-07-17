@@ -57,10 +57,6 @@ const Service = ({ mode = 'edit' }) => {
       setMessage(
         `${mode === 'create' ? 'Tạo' : 'Cập nhật'} dịch vụ thành công.`
       );
-      console.log(
-        `${mode === 'create' ? 'Tạo' : 'Cập nhật'} dịch vụ thành công:`,
-        payload
-      );
     } catch (error) {
       setError(
         error.errors

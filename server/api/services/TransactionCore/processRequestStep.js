@@ -71,9 +71,9 @@ module.exports = async (transInput) => {
     const totalAmount = transBody.amount + feeSnapshot;
     const receiverWallet = transBody.receiverPocketId
       ? {
-          id: transBody.receiverPocketId || null,
-          type: transBody.receiverPocketType || null,
-        }
+        id: transBody.receiverPocketId || null,
+        type: transBody.receiverPocketType || null,
+      }
       : null;
     trail.feeSnapshot = feeSnapshot; // Lưu lại phí tạm thời vào trail
 

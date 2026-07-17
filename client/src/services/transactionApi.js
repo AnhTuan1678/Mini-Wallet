@@ -15,8 +15,6 @@ export const requestTransactionAPI = async (
 
   const data = await response.json();
 
-  console.log('Request transaction response:', data);
-
   if (!response.ok || (data.error && data.error !== 200)) {
     console.error('Request transaction failed:', data);
     throw new Error(data.message || 'Yêu cầu giao dịch thất bại');

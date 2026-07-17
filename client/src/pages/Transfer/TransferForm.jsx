@@ -298,6 +298,20 @@ const TransferForm = ({ service, title = 'Chuyển tiền', billers = [] }) => {
                 <Typography fontWeight={700} color='primary' variant='h6'>
                   {Number(previewData?.totalAmount || 0).toLocaleString()} VNĐ
                 </Typography>
+                <Typography
+                  variant='body2'
+                  color='text.secondary'
+                  sx={{ mt: 1.5 }}
+                >
+                  Mã giao dịch: {previewData?.transRefId || 'N/A'}
+                </Typography>
+                <Typography
+                  variant='body2'
+                  color='text.secondary'
+                  sx={{ mt: 1.5 }}
+                >
+                  Phương thức xác thực: {previewData?.authMethod || 'none'}
+                </Typography>
               </Box>
 
               <Button

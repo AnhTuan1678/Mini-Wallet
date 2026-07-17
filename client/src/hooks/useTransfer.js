@@ -75,8 +75,6 @@ export default function useTransfer(service) {
         body[field.code] = value;
       });
 
-      console.log('Request body:', body);
-
       const result = await requestTransactionAPI(body, token);
 
       setTransRefId(result.transRefId);
@@ -108,7 +106,25 @@ export default function useTransfer(service) {
     setSuccess('');
 
     try {
-      await confirmTransactionAPI(transRefId, token);
+      const confirmResult = await confirmTransactionAPI(transRefId, token);
+
+      if (confirmResult?.authMethod === 'none') {
+        await verifyTransactionAPI(
+          {
+            transRefId,
+            pin: '',
+          },
+          token
+        );
+
+        setSuccess('Chuyển tiền thành công!');
+
+        setTimeout(() => {
+          onBack();
+        }, 2000);
+
+        return;
+      }
 
       setSuccess('Xác nhận thành công!');
 

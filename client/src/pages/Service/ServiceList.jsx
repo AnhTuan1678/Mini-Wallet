@@ -46,7 +46,6 @@ const ServiceListContent = () => {
       </Box>
     );
   }
-  console.log('service', service);
 
   if (service.name) {
     return <Service />;
