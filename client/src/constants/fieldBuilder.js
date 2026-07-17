@@ -39,38 +39,44 @@ export const QUERY_OPTIONS = [
     value: 'queryUserById',
     label: 'User theo ID',
     inputs: ['senderId'],
-    outputs: ['id', 'name', 'phone', 'role'],
+    outputs: ['id', 'name', 'phone', 'role', 'email'],
   },
   {
     value: 'queryUserByPhone',
     label: 'User theo SĐT',
     inputs: ['receiverPhone'],
-    outputs: ['id', 'name', 'phone', 'role'],
+    outputs: ['id', 'name', 'phone', 'role', 'email'],
   },
   {
     value: 'queryPocketByUserId',
     label: 'Pocket theo User id',
     inputs: ['senderId'],
-    outputs: ['id', 'balance'],
+    outputs: ['id', 'balance', 'type', 'owner'],
   },
   {
     value: 'queryPocketByPhone',
     label: 'Pocket theo Phone',
     inputs: ['receiverPhone'],
-    outputs: ['id', 'balance'],
+    outputs: ['id', 'balance', 'type', 'owner'],
   },
   {
     value: 'querySystemPocket',
     label: 'Ví hệ thống',
     inputs: [],
-    outputs: ['id', 'balance'],
+    outputs: ['id', 'balance', 'type', 'owner'],
   },
   {
     value: 'queryBankPocket',
     label: 'Ví ngân hàng',
     inputs: [],
-    outputs: ['id', 'balance'],
+    outputs: ['id', 'balance', 'type', 'owner'],
   },
+  {
+    value: 'queryBillerPocketById',
+    label: 'Ví Biller theo ID',
+    inputs: ['billerId'],
+    outputs: ['id', 'balance', 'type', 'owner'],
+  }
 ];
 
 export const AVAILABLE_FIELDS = [
@@ -78,12 +84,24 @@ export const AVAILABLE_FIELDS = [
     code: 'senderId',
     name: 'ID người gửi',
   },
-  {
-    code: 'receiverPhone',
-    name: 'Số ĐT người nhận',
-  },
-  {
-    code: 'amount',
-    name: 'Số tiền',
-  },
 ];
+
+export const getAvailableFields = (transFields = []) => {
+  const dynamicFields = (transFields || [])
+    .filter((field) => field?.code)
+    .map((field) => ({
+      code: field.code,
+      name: field.name || field.code,
+    }));
+
+  const seen = new Set();
+
+  return [...AVAILABLE_FIELDS, ...dynamicFields].filter((field) => {
+    if (seen.has(field.code)) {
+      return false;
+    }
+
+    seen.add(field.code);
+    return true;
+  });
+};

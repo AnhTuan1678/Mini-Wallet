@@ -20,10 +20,12 @@ import {
   DATA_TYPES,
   FIELD_BUILDER_RULES,
   QUERY_OPTIONS,
-  AVAILABLE_FIELDS,
+  getAvailableFields,
 } from '../../../constants/fieldBuilder';
+import useService from '../../../contexts/useService';
 
 const FieldBuilderItem = ({ field, index, onChange, onRemove }) => {
+  const { transField } = useService();
   const updateField = (key, value) => {
     onChange(index, {
       ...field,
@@ -46,6 +48,7 @@ const FieldBuilderItem = ({ field, index, onChange, onRemove }) => {
 
   const outputs =
     QUERY_OPTIONS.find((q) => q.value === field.query)?.outputs ?? [];
+  const availableFields = getAvailableFields(transField || []);
 
   return (
     <Stack direction='row' sx={{ alignItems: 'center' }}>
@@ -155,7 +158,7 @@ const FieldBuilderItem = ({ field, index, onChange, onRemove }) => {
                   label='Source Field'
                   onChange={(e) => updateField('sourceField', e.target.value)}
                 >
-                  {AVAILABLE_FIELDS.map((f) => (
+                  {availableFields.map((f) => (
                     <MenuItem key={f.code} value={f.code}>
                       {f.name}
                     </MenuItem>
@@ -197,7 +200,7 @@ const FieldBuilderItem = ({ field, index, onChange, onRemove }) => {
                     renderValue={(selected) => selected.join(', ')}
                     onChange={(e) => updateField('queryFields', e.target.value)}
                   >
-                    {AVAILABLE_FIELDS.map((f) => (
+                    {availableFields.map((f) => (
                       <MenuItem key={f.code} value={f.code}>
                         <Checkbox
                           checked={(field.queryFields ?? []).includes(f.code)}
