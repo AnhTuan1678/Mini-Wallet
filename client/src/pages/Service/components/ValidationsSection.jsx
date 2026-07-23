@@ -1,5 +1,4 @@
 import {
-  Box,
   Card,
   CardContent,
   Checkbox,
@@ -54,36 +53,6 @@ const ValidationsSection = ({
               </Grid>
             ))}
           </Grid>
-
-          {validations.length > 0 && (
-            <Box
-              sx={{
-                mt: 2,
-                p: 2,
-                bgcolor: 'grey.50',
-                borderRadius: 1,
-              }}
-            >
-              <Typography
-                variant='subtitle2'
-                color='text.secondary'
-                sx={{ mb: 1 }}
-              >
-                Đã chọn ({validations.length}):
-              </Typography>
-
-              {validations.map((validation, index) => (
-                <Typography
-                  key={validation.validateFunc ?? index}
-                  variant='body2'
-                  sx={{ ml: 2 }}
-                >
-                  {index + 1}. {validation.validateFunc} -{' '}
-                  {validation.validateFields}
-                </Typography>
-              ))}
-            </Box>
-          )}
         </CardContent>
       </Card>
     </Grid>

@@ -12,34 +12,16 @@ export const PREDEFINED_VALIDATIONS = [
     description: 'Tài khoản người gửi đủ số dư',
   },
   {
-    validateFunc: 'validateBalance',
-    validateFields: 'senderId:amount:debitFee',
-    errorCode: 'INSUFFICIENT_BALANCE',
-    description: 'Kiểm tra số dư trong ví người gửi',
-  },
-  {
     validateFunc: 'validatePocketChecksum',
     validateFields: 'senderPocketId:receiverPocketId',
     errorCode: 'INVALID_POCKET_CHECKSUM',
     description: 'Kiểm tra checksum của ví người gửi/người nhận',
   },
   {
-    validateFunc: 'validateTransactionLimit',
-    validateFields: 'senderId:amount:debitFee',
-    errorCode: 'INSUFFICIENT_BALANCE',
-    description: 'Kiểm tra giới hạn giao dịch của ví người gửi',
-  },
-  {
     validateFunc: 'validatePIN',
     validateFields: 'senderId:pin',
     errorCode: 'INVALID_PIN',
     description: 'Xác thực mã PIN của người gửi',
-  },
-  {
-    validateFunc: 'validateExpiryTime',
-    validateFields: 'senderId:amount:debitFee',
-    errorCode: 'TRANSACTION_EXPIRED',
-    description: 'Kiểm tra thời hạn giao dịch',
   },
   {
     validateFunc: 'validateAmountPositive',
@@ -58,12 +40,6 @@ export const PREDEFINED_VALIDATIONS = [
     validateFields: 'receiverId:receiverPhone',
     errorCode: 'RECEIVER_NOT_ACTIVE',
     description: 'Người nhận phải đang hoạt động',
-  },
-  {
-    validateFunc: 'validateReceiverWalletExists',
-    validateFields: 'receiverId:receiverPhone:receiverPocketId',
-    errorCode: 'RECEIVER_WALLET_NOT_FOUND',
-    description: 'Người nhận phải có ví tồn tại',
   },
   {
     validateFunc: 'validateBillOwner',

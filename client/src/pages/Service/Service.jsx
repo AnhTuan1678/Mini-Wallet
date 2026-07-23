@@ -75,23 +75,25 @@ const Service = ({ mode = 'edit' }) => {
 
   return (
     <Container maxWidth='xl'>
-      <Link
-        component='button'
-        underline='hover'
-        onClick={() => {
-          reset();
-        }}
-        sx={{
-          display: 'inline-flex',
-          alignItems: 'center',
-          gap: 0.5,
-          cursor: 'pointer',
-          mb: 4,
-        }}
-      >
-        <ArrowBackIcon fontSize='small' />
-        Quay lại danh sách
-      </Link>
+      {mode !== 'create' && (
+        <Link
+          component='button'
+          underline='hover'
+          onClick={() => {
+            reset();
+          }}
+          sx={{
+            display: 'inline-flex',
+            alignItems: 'center',
+            gap: 0.5,
+            cursor: 'pointer',
+            mb: 4,
+          }}
+        >
+          <ArrowBackIcon fontSize='small' />
+          Quay lại danh sách
+        </Link>
+      )}
       <Typography variant='h4' fontWeight={700} sx={{ mb: 3 }}>
         {mode === 'create' ? 'Tạo Dịch Vụ Mới' : 'Chi tiết dịch vụ'}
       </Typography>

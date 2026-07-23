@@ -1,15 +1,6 @@
 const { verifyChecksum } = require('../PocketService');
 
 const validateFuncs = {
-  async validateBalance(trail) {
-    const { senderId, amount, debitFee } = trail.inputMessage.transBody;
-    const pocket = await Pocket.findOne({ owner: senderId });
-
-    if (pocket.balance < amount + debitFee) {
-      throw new Error('INSUFFICIENT_BALANCE');
-    }
-  },
-
   async validateReceiverIsNotSender(trail) {
     const { senderId, receiverId } = trail.inputMessage.transBody;
 
@@ -46,15 +37,6 @@ const validateFuncs = {
     }
   },
 
-  async validateTransactionLimit(trail) {
-    const { senderId, amount, debitFee } = trail.inputMessage.transBody;
-    const pocket = await Pocket.findOne({ owner: senderId });
-
-    if (pocket.balance < amount + debitFee) {
-      throw new Error('INSUFFICIENT_BALANCE');
-    }
-  },
-
   async validatePIN(trail) {
     const { senderId, pin } = trail.inputMessage.transBody;
     const expiryTime = trail.expiryTime;
@@ -71,15 +53,6 @@ const validateFuncs = {
 
     if (Date.now() > expiryTime) {
       throw new Error('TRANSACTION_EXPIRED');
-    }
-  },
-
-  async validateExpiryTime(trail) {
-    const { senderId, amount, debitFee } = trail.inputMessage.transBody;
-    const pocket = await Pocket.findOne({ owner: senderId });
-
-    if (pocket.balance < amount + debitFee) {
-      throw new Error('INSUFFICIENT_BALANCE');
     }
   },
 
@@ -130,34 +103,6 @@ const validateFuncs = {
 
     if (receiver.status !== 'ACTIVE') {
       throw new Error('RECEIVER_NOT_ACTIVE');
-    }
-  },
-
-  async validateReceiverWalletExists(trail) {
-    const { receiverId, receiverPhone, receiverPocketId } =
-      trail.inputMessage.transBody;
-    let pocket = null;
-
-    if (receiverPocketId) {
-      pocket = await Pocket.findOne({ id: receiverPocketId });
-    } else {
-      let receiver = null;
-
-      if (receiverId) {
-        receiver = await Customer.findOne({ id: receiverId });
-      } else if (receiverPhone) {
-        receiver = await Customer.findOne({ phone: receiverPhone });
-      }
-
-      if (!receiver) {
-        throw new Error('RECEIVER_NOT_FOUND');
-      }
-
-      pocket = await Pocket.findOne({ owner: receiver.id });
-    }
-
-    if (!pocket) {
-      throw new Error('RECEIVER_WALLET_NOT_FOUND');
     }
   },
 
